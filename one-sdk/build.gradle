@@ -1,0 +1,22 @@
+group = 'tv.accedo.one'
+version = '1.0.0'
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 27
+
+        testInstrumentationRunnerArgument "accedo_one_test_apikey", "${accedo_one_test_apikey}"
+    }
+}
+
+dependencies {
+
+}
+
+apply from: 'release-script.gradle'

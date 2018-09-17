@@ -1,0 +1,110 @@
+/**
+ * This is mainly for internal use, to tag the latest release versions of this library.
+ *
+ * Most be applied at the end of your script.
+ */
+
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+apply plugin: 'digital.wup.android-maven-publish'
+apply from: 'javadoc.gradle'
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            from components.android
+        }
+    }
+}
+
+bintray {
+    user = "${bintray_user}"
+    key = "${bintray_apikey}"
+    publications = ['aar']
+    pkg {
+        repo = 'accedo-products'
+        name = 'accedo-one-sdk-android'
+        userOrg = "${bintray_user}"
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/Accedo-Products/accedo-one-sdk-android.git'
+        version {
+            name = "${project.version}"
+            desc = "Accedo One SDK Android ${project.version}"
+            released = new Date()
+            vcsTag = "release/${project.version}"
+        }
+    }
+}
+
+task tag() {
+    doLast {
+        def tagname = "release/" + version
+
+        def stdout = new ByteArrayOutputStream()
+
+        //Tag localy
+        int exitValue = exec {
+            commandLine 'git', 'tag', tagname
+            standardOutput = stdout
+            errorOutput = stdout
+            ignoreExitValue = true
+        }.getExitValue()
+
+        if (exitValue == 0) {
+            //If local tagging successful, try to upload
+            exitValue = exec {
+                commandLine 'git', 'push', 'origin', tagname
+                standardOutput = stdout
+                errorOutput = stdout
+                ignoreExitValue = true
+            }.getExitValue()
+
+            //If upload failed, delete local tag
+            if (exitValue != 0) {
+                printlnColor(" --> Uploading tag failed, reverting: " + tagname, 31);
+                exitValue = exec {
+                    commandLine 'git', 'tag', '-d', tagname
+                    standardOutput = stdout
+                    errorOutput = stdout
+                    ignoreExitValue = true
+                }.getExitValue()
+            } else {
+                printlnColor(" --> Tagged successfuly: " + tagname, 32);
+            }
+        } else {
+            printlnColor(" --> Already tagged with: " + tagname, 33);
+        }
+
+        stdout.close();
+    }
+}
+
+def printlnColor(text, color) {
+    println("" + (char) 27 + "[" + color + "m" + text + (char) 27 + "[0m");
+}
+
+def versionNameToCode(versionName) {
+    if (versionName.contains('-')) {
+        versionName = versionName.split('-')[0]
+    }
+    
+    def dots = versionName.count('.')
+
+    if (dots == 0) {
+        versionName += ".0.0"
+    } else if (dots == 1) {
+        versionName += ".0"
+    }
+
+    return versionName.replace('.', '') as Integer
+}
+
+android.defaultConfig.versionCode = versionNameToCode(version)
+android.defaultConfig.versionName = version
+android.defaultConfig.buildConfigField "String", "MODULE_NAME", "\"" + project.name + "\""
+android.defaultConfig.testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+dependencies {
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+}

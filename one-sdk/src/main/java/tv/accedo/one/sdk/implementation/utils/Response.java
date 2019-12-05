@@ -15,13 +15,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class Response {
-    public static final DateFormat DATE_HEADER_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
+    public static final DateFormat DATE_HEADER_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.US);
 
     private int code = -1;
     private byte[] response;
@@ -177,7 +178,7 @@ public class Response {
         return parser.parse(this);
     }
 
-    public static interface ThrowingParser<I, O, E extends Exception> {
+    public interface ThrowingParser<I, O, E extends Exception> {
         /**
          * Parses <I>, into <O>, or throws an <E> exception if any error occures
          *
@@ -185,7 +186,7 @@ public class Response {
          * @param <O> The output type
          * @throws <E> The error type
          */
-        public O parse(I input) throws E;
+        O parse(I input) throws E;
     }
 
 }

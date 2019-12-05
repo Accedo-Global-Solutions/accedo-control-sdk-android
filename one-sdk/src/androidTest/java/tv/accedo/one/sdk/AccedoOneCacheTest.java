@@ -7,27 +7,42 @@
 package tv.accedo.one.sdk;
 
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
+import java.util.Locale;
+
 import tv.accedo.one.sdk.definition.AccedoOne;
 import tv.accedo.one.sdk.implementation.AccedoOneImpl;
+import tv.accedo.one.sdk.implementation.utils.Response;
 import tv.accedo.one.sdk.model.AccedoOneException;
 
-import static tv.accedo.one.sdk.Shared.API_URL;
-import static tv.accedo.one.sdk.Shared.APP_ID;
-import static tv.accedo.one.sdk.Shared.DEVICE_ID;
-import static tv.accedo.one.sdk.Shared.getContext;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
+import static tv.accedo.one.sdk.Shared.API_URL;
+import static tv.accedo.one.sdk.Shared.APP_ID;
+import static tv.accedo.one.sdk.Shared.DEVICE_ID;
+import static tv.accedo.one.sdk.Shared.getContext;
 
 @RunWith(AndroidJUnit4.class)
 public class AccedoOneCacheTest {
     private final AccedoOne accedoOne = new AccedoOneImpl(API_URL, APP_ID, DEVICE_ID);
     private final AccedoOne accedoOneGid = new AccedoOneImpl(API_URL, APP_ID, DEVICE_ID).setGid("TESTGID");
+
+    @Test
+    public void testServerTimeLocale() {
+        try {
+            Locale.setDefault(Locale.GERMANY);
+            Response.DATE_HEADER_FORMAT.parse("Thu, 05 Dec 2019 13:42:08 GMT"); // Copied out from an actual date header.
+        } catch (ParseException e) {
+            fail(Log.getStackTraceString(e));
+        }
+    }
 
     @Test
     public void testPrefetchMetadata() {

@@ -128,7 +128,7 @@ class IfModifiedTask {
     }
 
     private String getTimestampCacheKey(String url, String appKey, String profileId) {
-        return "ONE" + Utils.md5Hash(removeSession(url) + appKey + profileId) + ".t";
+        return getCacheKey(url, appKey, profileId) + ".t";
     }
 
     public static String getCacheKey(Context context, String url, String appKey, Session session) {

@@ -37,6 +37,7 @@ import tv.accedo.one.sdk.implementation.parsers.JSONMapByteParser;
 import tv.accedo.one.sdk.implementation.parsers.JSONObjectByteParser;
 import tv.accedo.one.sdk.implementation.parsers.ProfileParser;
 import tv.accedo.one.sdk.implementation.parsers.SessionParser;
+import tv.accedo.one.sdk.model.Session;
 
 /**
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
@@ -53,7 +54,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
 
     //Storage
     private ConditionVariable cvSession = new ConditionVariable(true);
-    private Pair<String, Long> session;
+    private Session session;
 
     //Subservices
     private AccedoOneDetectImpl accedoOneDetectImpl = new AccedoOneDetectImpl(this);
@@ -143,7 +144,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     /**
      * This constructor uses the default endpoint of {@link Constants.DEFAULT_ENDPOINT}
      *
-     * @param appKey the hash of your Application inside Accedo One to connect to.
+     * @param appKey   the hash of your Application inside Accedo One to connect to.
      * @param deviceId a unique identifier of your device. (Eg AndroidID)
      */
     public AccedoOneImpl(String appKey, String deviceId) {
@@ -153,7 +154,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
 
     /**
      * @param endpoint The endpoint to connect to. The default is {@link Constants.DEFAULT_ENDPOINT}.
-     * @param appKey the hash of your Application inside Accedo One to connect to.
+     * @param appKey   the hash of your Application inside Accedo One to connect to.
      * @param deviceId a unique identifier of your device. (Eg AndroidID)
      */
     public AccedoOneImpl(String endpoint, String appKey, String deviceId) {
@@ -236,14 +237,15 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     public String getSession() throws AccedoOneException {
         //If we have session and its valid, return
         cvSession.block();
-        if (session != null && session.second > getServerTime()) {
-            return session.first;
+        if (session != null && session.getSessionExpiration() > getServerTime()) {
+            return session.getSessionKey();
         }
 
         //Otherwise fetch and store
         cvSession.close();
         try {
-            session = createRestClient(endpoint + PATH_SESSION)
+            // Get session.
+            Pair<String, Long> newSession = createRestClient(endpoint + PATH_SESSION)
                     .addHeader(HEADER_APPKEY, appKey)
                     .addHeader(HEADER_USERID, deviceId)
                     .setOnResponseListener(new OnResponseListener() {
@@ -254,6 +256,16 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
                     })
                     .connect(new AccedoOneResponseChecker())
                     .getParsedText(new SessionParser());
+
+            // Get the profile associated with the session.
+            Profile profile = createRestClient(endpoint + PATH_PROFILE)
+                    .addHeader(HEADER_SESSION, newSession.first)
+                    .connect(new AccedoOneResponseChecker())
+                    .getParsedText(new ProfileParser());
+
+            // Store session.
+            this.session = new Session(newSession.first, newSession.second, profile);
+
         } catch (AccedoOneException e) {
             throw e;
         } finally {
@@ -261,7 +273,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         }
 
         //And return
-        return session.first;
+        return session.getSessionKey();
     }
 
     @Override
@@ -297,6 +309,10 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     @Override
     public AccedoOneCache cache() {
         return new AccedoOneCacheImpl(this);
+    }
+
+    public Session getCurrentSession() {
+        return session;
     }
 
     public Request createRestClient(String url) {

@@ -12,104 +12,137 @@ import java.util.Locale;
 
 import tv.accedo.one.sdk.BuildConfig;
 import tv.accedo.one.sdk.implementation.utils.InternalStorage;
-import tv.accedo.one.sdk.implementation.utils.Utils;
+import tv.accedo.one.sdk.implementation.utils.Request;
 import tv.accedo.one.sdk.implementation.utils.Response;
 import tv.accedo.one.sdk.implementation.utils.Response.ThrowingParser;
-import tv.accedo.one.sdk.implementation.utils.Request;
+import tv.accedo.one.sdk.implementation.utils.Utils;
 import tv.accedo.one.sdk.model.AccedoOneException;
 import tv.accedo.one.sdk.model.AccedoOneException.StatusCode;
+import tv.accedo.one.sdk.model.Session;
 
 /**
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 class IfModifiedTask {
     private static final String FILENAME_VERSIONCODE = "OneSdkVersion";
-    private static final int LAST_CACHEBREAKING_VERSION_UPDATE = 100; //1.0(.0)
+    private static final String FILENAME_LAST_PROFILE_ID = "OneLastProfileId";
+    private static final int LAST_CACHEBREAKING_VERSION_UPDATE = 102; //1.0(.0)
 
     private static final SimpleDateFormat sdfIfModifiedSince = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
 
     private AccedoOneImpl accedoOneImpl;
     private Context context;
     private String url;
-    
-    public IfModifiedTask(AccedoOneImpl accedoOneImpl, Context context, String url){
+
+    public IfModifiedTask(AccedoOneImpl accedoOneImpl, Context context, String url) {
         this.accedoOneImpl = accedoOneImpl;
         this.context = context;
         this.url = url;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <O> O run(ThrowingParser<byte[], O, AccedoOneException> parser) throws AccedoOneException {
         cleanup(context, false);
 
         Request request = accedoOneImpl.createRestClient(url);
+        String cacheKey = null;
+        String timestampCacheKey = null;
+        String profileId = null;
 
-        String key = getCacheKey(request.getUrl(), accedoOneImpl.getAppKey(), accedoOneImpl.getGid());
-        String timestampKey = getTimestampCacheKey(request.getUrl(), accedoOneImpl.getAppKey(), accedoOneImpl.getGid());
-
-        //Try to fetch a response.. Remember, even createSessionedRestClient() might fail if we are offline
+        //Try to fetch a response.. Remember, even getSession() might fail if we are offline
         Throwable caughtException = null;
         Response response = null;
-        try{
+        try {
+            // Get session, profile, and the cachekeys for the given profile
+            String sessionKey = accedoOneImpl.getSession();
+            profileId = accedoOneImpl.getCurrentSession().getProfile().getProfileId();
+            cacheKey = getCacheKey(request.getUrl(), accedoOneImpl.getAppKey(), profileId);
+            timestampCacheKey = getTimestampCacheKey(request.getUrl(), accedoOneImpl.getAppKey(), profileId);
+
             //If-Modified-Since
-            if(InternalStorage.exists(context, timestampKey)){
-                Long lastFetchedAt = (Long) InternalStorage.read(context, timestampKey);
-                if(lastFetchedAt!=null){
+            if (InternalStorage.exists(context, timestampCacheKey)) {
+                Long lastFetchedAt = (Long) InternalStorage.read(context, timestampCacheKey);
+                if (lastFetchedAt != null) {
                     request.addHeader("If-Modified-Since", sdfIfModifiedSince.format(new Date(lastFetchedAt)));
                 }
             }
-            
+
             //Connect
-            response = request.addHeader(Constants.HEADER_SESSION, accedoOneImpl.getSession()).connect(new AccedoOneResponseChecker());
-            
-        }catch(AccedoOneException e){
+            response = request.addHeader(Constants.HEADER_SESSION, sessionKey).connect(new AccedoOneResponseChecker());
+
+        } catch (Exception e) {
             Utils.log(e);
-            Utils.log(Log.INFO, "Something went wrong. Going into offline mode for: "+ request.getUrl());
+            Utils.log(Log.INFO, "Something went wrong. Going into offline mode for: " + request.getUrl());
             caughtException = e.getCause();
         }
-        
+
         //Process response
         if (response != null && response.isSuccess()) {
             //Store if we've successfuly fetched something
             O result = parser.parse(response.getRawResponse());
-            InternalStorage.write(context, response.getRawResponse(), key);
-            InternalStorage.write(context, response.getServerTime(), timestampKey);
-            Utils.log(Log.INFO, "Storing in offline cache: "+ request.getUrl());
+            InternalStorage.write(context, response.getRawResponse(), cacheKey);
+            InternalStorage.write(context, response.getServerTime(), timestampCacheKey);
+            InternalStorage.write(context, profileId, FILENAME_LAST_PROFILE_ID);
+            Utils.log(Log.INFO, "Storing in offline cache: " + request.getUrl());
             return result;
-        
+
         } else {
             //Try from offline cache
-            Object result = null;
-            if(InternalStorage.exists(context, key)){
-                result = parser.parse((byte[]) InternalStorage.read(context, key));
+
+            // See if we at least got the profileId, or we need to recover the last saved profile Id
+            if (cacheKey == null || timestampCacheKey == null) {
+                String lastProfileId = (String) InternalStorage.read(context, FILENAME_LAST_PROFILE_ID);
+                if (lastProfileId != null) {
+                    cacheKey = getCacheKey(request.getUrl(), accedoOneImpl.getAppKey(), lastProfileId);
+                    timestampCacheKey = getTimestampCacheKey(request.getUrl(), accedoOneImpl.getAppKey(), lastProfileId);
+                }
             }
-            if(result!=null){
+
+            Object result = null;
+            if (cacheKey != null && timestampCacheKey != null && InternalStorage.exists(context, cacheKey)) {
+                result = parser.parse((byte[]) InternalStorage.read(context, cacheKey));
+            }
+            if (result != null) {
                 //We got something, lets try to cast and return it
-                try{
+                try {
                     O o = (O) result;
-                    Utils.log(Log.INFO, "Serving from offline cache: "+ request.getUrl());
+                    Utils.log(Log.INFO, "Serving from offline cache: " + request.getUrl());
                     return o;
-                }catch(ClassCastException e){
-                    Utils.log(Log.WARN, "Failed to serve from offline cache: "+ request.getUrl());
-                    InternalStorage.delete(context, key);
-                    InternalStorage.delete(context, timestampKey);
+                } catch (ClassCastException e) {
+                    Utils.log(Log.WARN, "Failed to serve from offline cache: " + request.getUrl());
+                    InternalStorage.delete(context, cacheKey);
+                    InternalStorage.delete(context, timestampCacheKey);
+                    InternalStorage.delete(context, FILENAME_LAST_PROFILE_ID);
                     throw new AccedoOneException(StatusCode.CACHE_ERROR, e);
-                }    
-            }else{
+                }
+            } else {
                 //Sorry, no luck
-                Utils.log(Log.WARN, "Failed to serve from offline cache: "+ request.getUrl());
+                Utils.log(Log.WARN, "Failed to serve from offline cache: " + request.getUrl());
                 throw new AccedoOneException(StatusCode.CACHE_MISS, caughtException);
             }
         }
     }
-    
-    public static String getCacheKey(String url, String appKey, String gid){
-        return "ONE"+ Utils.md5Hash(removeSession(url) + appKey + gid);
+
+    private String getCacheKey(String url, String appKey, String profileId) {
+        return "ONE" + Utils.md5Hash(removeSession(url) + appKey + profileId);
     }
-    public static String getTimestampCacheKey(String url, String appKey, String gid){
-        return "ONE"+ Utils.md5Hash(removeSession(url) + appKey + gid)+".t";
+
+    private String getTimestampCacheKey(String url, String appKey, String profileId) {
+        return "ONE" + Utils.md5Hash(removeSession(url) + appKey + profileId) + ".t";
     }
-    private static String removeSession(String url){
+
+    public static String getCacheKey(Context context, String url, String appKey, Session session) {
+        String profileId;
+        if (session != null && session.getProfile() != null) {
+            profileId = session.getProfile().getProfileId();
+        } else {
+            profileId = (String) InternalStorage.read(context, IfModifiedTask.FILENAME_LAST_PROFILE_ID);
+
+        }
+        return "ONE" + Utils.md5Hash(removeSession(url) + appKey + profileId);
+    }
+
+    private static String removeSession(String url) {
         if (url.contains("sessionKey")) {
             try {
                 URI uri = new URI(url);

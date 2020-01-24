@@ -22,15 +22,17 @@ import tv.accedo.one.sdk.implementation.utils.InternalStorage;
 import tv.accedo.one.sdk.model.AccedoOneException;
 import tv.accedo.one.sdk.implementation.parsers.JSONMapByteParser;
 import tv.accedo.one.sdk.implementation.parsers.JSONObjectByteParser;
+import tv.accedo.one.sdk.model.Profile;
+import tv.accedo.one.sdk.model.Session;
 
 /**
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class AccedoOneCacheImpl extends Constants implements AccedoOneCache {
-    private AccedoOne accedoOne;
+    private AccedoOneImpl accedoOneImpl;
 
-    public AccedoOneCacheImpl(AccedoOne accedoOne) {
-        this.accedoOne = accedoOne;
+    public AccedoOneCacheImpl(AccedoOneImpl accedoOneImpl) {
+        this.accedoOneImpl = accedoOneImpl;
     }
 
     @Override
@@ -45,14 +47,14 @@ public class AccedoOneCacheImpl extends Constants implements AccedoOneCache {
 
     @Override
     public Map<String, String> getAllMetadata(Context context) {
-        String cacheKey = IfModifiedTask.getCacheKey(getUrl(PATH_METADATA), accedoOne.getAppKey(), accedoOne.getGid());
+        String cacheKey = IfModifiedTask.getCacheKey(context, getUrl(PATH_METADATA), accedoOneImpl.getAppKey(), accedoOneImpl.getCurrentSession());
 
         return getMapFromCache(context, cacheKey);
     }
 
     @Override
     public JSONObject getAllMetadataRaw(Context context) {
-        String cacheKey = IfModifiedTask.getCacheKey(getUrl(PATH_METADATA), accedoOne.getAppKey(), accedoOne.getGid());
+        String cacheKey = IfModifiedTask.getCacheKey(context, getUrl(PATH_METADATA), accedoOneImpl.getAppKey(), accedoOneImpl.getCurrentSession());
 
         return getJSONFromCache(context, cacheKey);
     }
@@ -69,13 +71,13 @@ public class AccedoOneCacheImpl extends Constants implements AccedoOneCache {
             return null;
         }
 
-        String cacheKey = IfModifiedTask.getCacheKey(assetUrl, accedoOne.getAppKey(), accedoOne.getGid());
+        String cacheKey = IfModifiedTask.getCacheKey(context, assetUrl, accedoOneImpl.getAppKey(), accedoOneImpl.getCurrentSession());
         return (byte[]) InternalStorage.read(context, cacheKey);
     }
 
     @Override
     public Map<String, String> getAllAssets(Context context) {
-        String cacheKey = IfModifiedTask.getCacheKey(getUrl(PATH_ASSETS), accedoOne.getAppKey(), accedoOne.getGid());
+        String cacheKey = IfModifiedTask.getCacheKey(context, getUrl(PATH_ASSETS), accedoOneImpl.getAppKey(), accedoOneImpl.getCurrentSession());
 
         return getMapFromCache(context, cacheKey);
     }
@@ -123,9 +125,9 @@ public class AccedoOneCacheImpl extends Constants implements AccedoOneCache {
     }
 
     private String getUrl(String path) {
-        Uri uri = Uri.parse(accedoOne.getEndpoint() + path);
-        if (!TextUtils.isEmpty(accedoOne.getGid())) {
-            uri = uri.buildUpon().appendQueryParameter("gid", accedoOne.getGid()).build();
+        Uri uri = Uri.parse(accedoOneImpl.getEndpoint() + path);
+        if (!TextUtils.isEmpty(accedoOneImpl.getGid())) {
+            uri = uri.buildUpon().appendQueryParameter("gid", accedoOneImpl.getGid()).build();
         }
         return uri.toString();
     }

@@ -73,7 +73,7 @@ class IfModifiedTask {
         } catch (Exception e) {
             Utils.log(e);
             Utils.log(Log.INFO, "Something went wrong. Going into offline mode for: " + request.getUrl());
-            caughtException = e.getCause();
+            caughtException = e instanceof AccedoOneException ? e.getCause() : e;
         }
 
         //Process response

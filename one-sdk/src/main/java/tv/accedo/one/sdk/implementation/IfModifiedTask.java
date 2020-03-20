@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import tv.accedo.one.sdk.BuildConfig;
 import tv.accedo.one.sdk.implementation.utils.InternalStorage;
@@ -26,7 +27,7 @@ class IfModifiedTask {
     private static final String FILENAME_VERSIONCODE = "OneSdkVersion";
     private static final int LAST_CACHEBREAKING_VERSION_UPDATE = 100; //1.0(.0)
 
-    private static final SimpleDateFormat sdfIfModifiedSince = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+    private static final SimpleDateFormat sdfIfModifiedSince = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.getDefault());
 
     private AccedoOneImpl accedoOneImpl;
     private Context context;
@@ -36,6 +37,7 @@ class IfModifiedTask {
         this.accedoOneImpl = accedoOneImpl;
         this.context = context;
         this.url = url;
+        sdfIfModifiedSince.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
     
     @SuppressWarnings("unchecked")

@@ -27,7 +27,7 @@ class IfModifiedTask {
     private static final String FILENAME_VERSIONCODE = "OneSdkVersion";
     private static final int LAST_CACHEBREAKING_VERSION_UPDATE = 100; //1.0(.0)
 
-    private static final SimpleDateFormat sdfIfModifiedSince = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.getDefault());
+    private static final SimpleDateFormat sdfIfModifiedSince = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
 
     private AccedoOneImpl accedoOneImpl;
     private Context context;

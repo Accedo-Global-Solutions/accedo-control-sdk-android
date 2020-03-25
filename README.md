@@ -9,6 +9,8 @@
 
 ```
 
+[ ![Download](https://api.bintray.com/packages/tibor-pasztor-accedo/accedo-products/accedo-one-sdk-android/images/download.svg) ](https://bintray.com/tibor-pasztor-accedo/accedo-products/accedo-one-sdk-android/_latestVersion)
+
 ## Summary
 
 This is the official [Accedo One](https://www.accedo.tv/one) SDK for Android 4.0 and up, previously known as the VDK AppGrid component.
@@ -45,7 +47,7 @@ repositories {
     jcenter()
 }
 dependencies {
-    implementation 'tv.accedo.one:one-sdk:1.0.0'
+    implementation 'tv.accedo.one:one-sdk:<latest>'
 }
 ```
 

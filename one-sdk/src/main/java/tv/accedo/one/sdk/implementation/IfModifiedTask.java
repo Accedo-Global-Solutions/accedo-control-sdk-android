@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import tv.accedo.one.sdk.BuildConfig;
 import tv.accedo.one.sdk.implementation.utils.InternalStorage;
@@ -36,6 +37,7 @@ class IfModifiedTask {
         this.accedoOneImpl = accedoOneImpl;
         this.context = context;
         this.url = url;
+        sdfIfModifiedSince.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
     
     @SuppressWarnings("unchecked")

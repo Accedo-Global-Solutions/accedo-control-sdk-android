@@ -17,12 +17,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class Response {
-    public static final DateFormat DATE_HEADER_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.US);
+    public static final DateFormat DATE_HEADER_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss zzz", Locale.US);
+
+    static {
+        DATE_HEADER_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
 
     private int code = -1;
     private byte[] response;

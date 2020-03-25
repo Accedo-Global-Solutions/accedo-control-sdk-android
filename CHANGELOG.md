@@ -1,5 +1,9 @@
 ## Changelog ##
 
+v1.0.2 (2020-03-25)
+
+* Added explicit GMT server time handling for If-Modified-Since fixing locale issues in some regions.
+
 v1.0.1 (2019-12-05)
 
 * Fixing an issue where device time was used for If-Modified-Since headers on certain devices, instead of server time.

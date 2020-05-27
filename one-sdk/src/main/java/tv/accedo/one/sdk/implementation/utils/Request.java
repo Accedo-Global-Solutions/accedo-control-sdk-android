@@ -13,8 +13,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
@@ -23,13 +26,7 @@ public class Request {
     public static final String TAG = "RestClient";
     protected static final int DEFAULT_TIMEOUT_CONNECT = 5000;
     protected static final int DEFAULT_TIMEOUT_READ = 10000;
-
-    public static enum Method {
-        GET,
-        POST,
-        PUT,
-        DELETE
-    }
+    protected static OnResponseListener globalOnResponseListener;
 
     protected String url;
     protected HttpURLConnection httpUrlConnection;
@@ -272,11 +269,22 @@ public class Request {
         return response;
     }
 
-    public static interface OnResponseListener {
-        public void onResponse(Response response);
+    public static void setGlobalResponseListener(OnResponseListener onResponseListener) {
+        globalOnResponseListener = onResponseListener;
     }
 
-    public static interface ResponseChecker<T extends Exception> {
-        public void throwIfNecessary(Response response) throws T;
+    public enum Method {
+        GET,
+        POST,
+        PUT,
+        DELETE
+    }
+
+    public interface OnResponseListener {
+        void onResponse(Response response);
+    }
+
+    public interface ResponseChecker<T extends Exception> {
+        void throwIfNecessary(Response response) throws T;
     }
 }

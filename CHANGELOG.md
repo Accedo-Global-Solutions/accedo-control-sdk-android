@@ -1,5 +1,9 @@
 ## Changelog ##
 
+v1.0.3 (2020-05-27)
+
+* Added setGlobalResponseListener() to Request, the underlying REST client of the SDK. Useful for analytics.
+
 v1.0.2 (2020-03-25)
 
 * Added explicit GMT server time handling for If-Modified-Since fixing locale issues in some regions.

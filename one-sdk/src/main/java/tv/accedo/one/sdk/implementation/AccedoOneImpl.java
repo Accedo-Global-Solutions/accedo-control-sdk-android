@@ -243,17 +243,13 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         //Otherwise fetch and store
         cvSession.close();
         try {
-            session = createRestClient(endpoint + PATH_SESSION)
+            Response response = createRestClient(endpoint + PATH_SESSION)
                     .addHeader(HEADER_APPKEY, appKey)
                     .addHeader(HEADER_USERID, deviceId)
-                    .setOnResponseListener(new OnResponseListener() {
-                        @Override
-                        public void onResponse(Response response) {
-                            serverTimeDifference = response.getServerTime() - SystemClock.elapsedRealtime();
-                        }
-                    })
-                    .connect(new AccedoOneResponseChecker())
-                    .getParsedText(new SessionParser());
+                    .connect(new AccedoOneResponseChecker());
+
+            serverTimeDifference = response.getServerTime() - SystemClock.elapsedRealtime();
+            session = response.getParsedText(new SessionParser());
         } catch (AccedoOneException e) {
             throw e;
         } finally {

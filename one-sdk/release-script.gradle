@@ -18,13 +18,13 @@ publishing {
 }
 
 bintray {
-    user = "${bintray_user}"
-    key = "${bintray_apikey}"
+    user = project.hasProperty('bintray_user') ? "${bintray_user}" : ""
+    key = project.hasProperty('bintray_apikey') ? "${bintray_apikey}" : ""
     publications = ['aar']
     pkg {
         repo = 'accedo-products'
         name = 'accedo-one-sdk-android'
-        userOrg = "${bintray_user}"
+        userOrg = project.hasProperty('bintray_user') ? "${bintray_user}" : ""
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/Accedo-Products/accedo-one-sdk-android.git'
         version {

@@ -1,5 +1,9 @@
 ## Changelog ##
 
+v1.0.3 (2020-06-09)
+
+* Developers now are able to attach an onResponseListener to their AccedoOneImpl subclass.
+
 v1.0.2 (2020-03-25)
 
 * Added explicit GMT server time handling for If-Modified-Since fixing locale issues in some regions.

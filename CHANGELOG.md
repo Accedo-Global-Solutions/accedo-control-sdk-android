@@ -1,5 +1,12 @@
 ## Changelog ##
 
+v1.1.0 (2020-11-XX)
+
+* Renamed one-sdk module to control-sdk
+* Updated gradle tools version to 3.6.4
+* Upgraded gradle wrapper to 6.6.1
+* Upgraded compile and target versions to 29
+
 v1.0.3 (2020-06-09)
 
 * Developers now are able to attach an onResponseListener to their AccedoOneImpl subclass.

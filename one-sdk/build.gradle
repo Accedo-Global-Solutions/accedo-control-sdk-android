@@ -4,12 +4,11 @@ version = '1.0.3'
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
-//    buildToolsVersion '27.0.3' Android gradle plugin now has a default version
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 29
 
         testInstrumentationRunnerArgument "accedo_one_test_apikey", project.hasProperty('accedo_one_test_apikey') ? "${accedo_one_test_apikey}" : ""
     }

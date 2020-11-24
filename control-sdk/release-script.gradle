@@ -29,7 +29,7 @@ bintray {
         vcsUrl = 'https://github.com/Accedo-Products/accedo-one-sdk-android.git'
         version {
             name = "${project.version}"
-            desc = "Accedo One SDK Android ${project.version}"
+            desc = "Accedo One Control SDK Android ${project.version}"
             released = new Date()
             vcsTag = "release/${project.version}"
         }

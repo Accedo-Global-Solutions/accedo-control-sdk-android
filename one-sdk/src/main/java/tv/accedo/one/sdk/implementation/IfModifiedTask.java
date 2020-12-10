@@ -13,10 +13,10 @@ import java.util.TimeZone;
 
 import tv.accedo.one.sdk.BuildConfig;
 import tv.accedo.one.sdk.implementation.utils.InternalStorage;
-import tv.accedo.one.sdk.implementation.utils.Utils;
+import tv.accedo.one.sdk.implementation.utils.Request;
 import tv.accedo.one.sdk.implementation.utils.Response;
 import tv.accedo.one.sdk.implementation.utils.Response.ThrowingParser;
-import tv.accedo.one.sdk.implementation.utils.Request;
+import tv.accedo.one.sdk.implementation.utils.Utils;
 import tv.accedo.one.sdk.model.AccedoOneException;
 import tv.accedo.one.sdk.model.AccedoOneException.StatusCode;
 
@@ -27,7 +27,10 @@ class IfModifiedTask {
     private static final String FILENAME_VERSIONCODE = "OneSdkVersion";
     private static final int LAST_CACHEBREAKING_VERSION_UPDATE = 100; //1.0(.0)
 
-    private static final SimpleDateFormat sdfIfModifiedSince = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+    static final SimpleDateFormat sdfIfModifiedSince = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+    static {
+        sdfIfModifiedSince.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
 
     private AccedoOneImpl accedoOneImpl;
     private Context context;
@@ -37,7 +40,6 @@ class IfModifiedTask {
         this.accedoOneImpl = accedoOneImpl;
         this.context = context;
         this.url = url;
-        sdfIfModifiedSince.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
     
     @SuppressWarnings("unchecked")

@@ -21,6 +21,8 @@ bintray {
     user = project.hasProperty('bintray_user') ? "${bintray_user}" : ""
     key = project.hasProperty('bintray_apikey') ? "${bintray_apikey}" : ""
     publications = ['aar']
+    publish = true
+
     pkg {
         repo = 'accedo-products'
         name = 'accedo-one-sdk-android'

@@ -47,7 +47,7 @@ repositories {
     jcenter()
 }
 dependencies {
-    implementation 'tv.accedo.one:one-sdk:<latest>'
+    implementation 'tv.accedo.one:control-sdk:<latest>'
 }
 ```
 

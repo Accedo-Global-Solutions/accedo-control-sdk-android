@@ -32,7 +32,7 @@ public class SessionParser implements ThrowingParser<Response, Pair<String, Long
             long sessionExpiration = expiration.getTime();
             return new Pair<String, Long>(session, sessionExpiration);
             
-        } catch (ParseException | JSONException e) {
+        } catch (ParseException | JSONException | NullPointerException e) {
             throw new AccedoOneException(StatusCode.NO_SESSION, e);
         }
     }

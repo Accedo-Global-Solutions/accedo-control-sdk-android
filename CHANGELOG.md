@@ -1,5 +1,9 @@
 ## Changelog ##
 
+v1.1.1 (2021-02-04)
+
+* Catching NullPointer in SessionParser
+
 v1.1.0 (2020-11-XX)
 
 * Renamed one-sdk module to control-sdk

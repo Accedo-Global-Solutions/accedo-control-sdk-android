@@ -44,7 +44,9 @@ You may also want to refer to the [Accedo One Rest API documentation](https://de
 
 ```
 repositories {
-    jcenter()
+	maven {
+		url  "https://dl.bintray.com/tibor-pasztor-accedo/accedo-products"
+	}
 }
 dependencies {
     implementation 'tv.accedo.one:control-sdk:<latest>'

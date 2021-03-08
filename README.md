@@ -42,20 +42,51 @@ You may also want to refer to the [Accedo One Rest API documentation](https://de
 
 - Include the library into your buildscript: 
 
-```
-repositories {
-	maven {
-		url  "https://dl.bintray.com/tibor-pasztor-accedo/accedo-products"
-	}
+<details>
+<summary>Setup using Accedo Artifactory</summary>
+<p>
+
+```groovy
+// In root build.gradle
+maven {
+    // Accedo Control SDK in Artifactory
+    url "https://repo.cloud.accedo.tv/artifactory/control-sdk-android"
+    credentials { username = artifactory_user; password = artifactory_password }
 }
+
+// In project module
 dependencies {
     implementation 'tv.accedo.one:control-sdk:<latest>'
 }
 ```
 
+</p>
+</details> 
+
+
+<details>
+<summary>Setup using Bintray (Which will be deprecated soon!)</summary>
+<p>
+
+```groovy
+// In root build.gradle
+maven {
+    // Accedo Control SDK in Artifactory
+    url  "https://dl.bintray.com/tibor-pasztor-accedo/accedo-products"
+}
+
+// In project module
+dependencies {
+    implementation 'tv.accedo.one:control-sdk:<latest>'
+}
+```
+
+</p>
+</details>
+
 - Create a singleton instance of AccedoOne in your service holder or application such as:
 
-```
+```java
 static final AccedoOne accedoOne = new AccedoOneImpl("appKey", getDeviceId());
 ```
 
@@ -71,7 +102,7 @@ The SDK provides you with both sync and async calls for almost every API it expo
 
 Sync example:
 
-```
+```java
 try {
     String result = accedoOne.control().getMetadata(context, "base_url");
 } catch (AccedoOneException e) {
@@ -81,7 +112,7 @@ try {
 
 Async example:
 
-```
+```java
 Cancellable cancellable = accedoOne.control().async().getMetadata(context, "base_url", new Callback<String>() {
     @Override
     public void execute(String result) {
@@ -99,7 +130,7 @@ Please note the cancellable returned by async calls. Those can be useful if you'
 
 ### Publish example
 
-```
+```java
 try {
     JSONObject result = accedoOne.publish().getEntry(context, "hashId");
 } catch (AccedoOneException e) {

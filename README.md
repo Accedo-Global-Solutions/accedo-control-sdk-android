@@ -43,6 +43,27 @@ You may also want to refer to the [Accedo One Rest API documentation](https://de
 - Include the library into your buildscript: 
 
 <details>
+<summary>Setup using Github Packages</summary>
+<p>
+
+```groovy
+// In root build.gradle
+maven {
+    // Github Packages maven url
+    url "https://maven.pkg.github.com/Accedo-Products/accedo-control-sdk-android"
+    credentials { username = github_user; password = github_api_key }
+}
+
+// In project module
+dependencies {
+    implementation 'tv.accedo.one:control-sdk:<latest>'
+}
+```
+
+</p>
+</details> 
+
+<details>
 <summary>Setup using Accedo Artifactory</summary>
 <p>
 
@@ -71,7 +92,7 @@ dependencies {
 ```groovy
 // In root build.gradle
 maven {
-    // Accedo Control SDK in Artifactory
+    // JFrog Bintray url
     url  "https://dl.bintray.com/tibor-pasztor-accedo/accedo-products"
 }
 

@@ -4,6 +4,7 @@
  * Most be applied at the end of your script.
  */
 
+apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 apply plugin: 'digital.wup.android-maven-publish'
@@ -13,6 +14,33 @@ publishing {
     publications {
         aar(MavenPublication) {
             from components.android
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+
+            url = "https://maven.pkg.github.com/Accedo-Products/accedo-control-sdk-android"
+            credentials {
+                username = "${github_user}"
+                password = "${github_api_token}"
+            }
+        }
+    }
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"
+    publish {
+        repository {
+            repoKey = "control-sdk-android"
+            username = "${artifactory_deploy_user}"
+            password = "${artifactory_deploy_password}"
+        }
+
+        defaults {
+            publications('aar')
         }
     }
 }
@@ -89,7 +117,7 @@ def versionNameToCode(versionName) {
     if (versionName.contains('-')) {
         versionName = versionName.split('-')[0]
     }
-    
+
     def dots = versionName.count('.')
 
     if (dots == 0) {

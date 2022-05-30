@@ -9,7 +9,6 @@ package tv.accedo.one.sdk.implementation.utils;
 import android.util.Log;
 
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,7 +30,6 @@ public class Response {
 
     private int code = -1;
     private byte[] response;
-    private HttpURLConnection httpUrlConnection;
     private String charset;
     private String url;
     private Map<String, List<String>> headers = new HashMap<>();
@@ -113,13 +111,6 @@ public class Response {
     }
 
     /**
-     * @return the HttpURLConnection behind the RestClient instance, that created this Response
-     */
-    public HttpURLConnection getUrlConnection() {
-        return httpUrlConnection;
-    }
-
-    /**
      * @return The exception caught during the creation of the urlConnection used, or during connection, or during the parsing of the response.
      */
     public Exception getCaughtException() {
@@ -134,16 +125,15 @@ public class Response {
      * @param charset the charset used, the default being {@link Request.charset}.
      * @param logLevel the logLevel used by this restClient instance, the default being {@link LogLevel.NORMAL}
      */
-    public Response(HttpURLConnection httpUrlConnection, String url, String charset) {
-        this.httpUrlConnection = httpUrlConnection;
+    public Response(okhttp3.Response resp, String url, String charset) {
         this.url = url;
         this.charset = charset;
 
         //Code & Body
         InputStream inputStream = null;
         try {
-            code = httpUrlConnection.getResponseCode();
-            inputStream = code < 400? httpUrlConnection.getInputStream() : httpUrlConnection.getErrorStream();
+            code = resp.code();
+            inputStream = resp.body().byteStream();
             response = Utils.toByteArray(inputStream);
 
         } catch (Exception e) {
@@ -153,8 +143,8 @@ public class Response {
         }
 
         //Headers
-        if (httpUrlConnection != null && httpUrlConnection.getHeaderFields() != null) {
-            headers.putAll(httpUrlConnection.getHeaderFields());
+        if (resp != null && resp.headers() != null) {
+            headers.putAll(resp.headers().toMultimap());
         }
 
         //Logging

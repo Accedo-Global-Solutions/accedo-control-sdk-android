@@ -1,6 +1,8 @@
 package tv.accedo.one.sdk.implementation;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import java.io.File;
@@ -11,7 +13,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import tv.accedo.one.sdk.BuildConfig;
 import tv.accedo.one.sdk.implementation.utils.InternalStorage;
 import tv.accedo.one.sdk.implementation.utils.Request;
 import tv.accedo.one.sdk.implementation.utils.Response;
@@ -64,7 +65,7 @@ class IfModifiedTask {
             }
             
             //Connect
-            response = request.addHeader(Constants.HEADER_SESSION, accedoOneImpl.getSession()).connect(new AccedoOneResponseChecker());
+            response = request.addHeader(Constants.HEADER_SESSION, accedoOneImpl.getSession()).connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker());
             
         }catch(AccedoOneException e){
             Utils.log(e);
@@ -113,6 +114,8 @@ class IfModifiedTask {
     public static String getTimestampCacheKey(String url, String appKey, String gid){
         return "ONE"+ Utils.md5Hash(removeSession(url) + appKey + gid)+".t";
     }
+
+
     private static String removeSession(String url){
         if (url.contains("sessionKey")) {
             try {
@@ -140,7 +143,11 @@ class IfModifiedTask {
                 }
             }
         }
-
-        InternalStorage.write(context, new Integer(BuildConfig.VERSION_CODE), FILENAME_VERSIONCODE);
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            InternalStorage.write(context, pInfo.versionCode, FILENAME_VERSIONCODE);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

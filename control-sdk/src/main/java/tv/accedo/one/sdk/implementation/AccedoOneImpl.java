@@ -12,7 +12,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import tv.accedo.one.sdk.definition.AccedoOneCache;
 import tv.accedo.one.sdk.definition.AccedoOneControl;
 import tv.accedo.one.sdk.definition.AccedoOneInsight;
@@ -50,6 +52,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     private String appKey;
     private String deviceId;
     private String gid;
+    protected OkHttpClient okHttpClient;
 
     //Storage
     private ConditionVariable cvSession = new ConditionVariable(true);
@@ -149,6 +152,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     public AccedoOneImpl(String appKey, String deviceId) {
         this.appKey = appKey;
         this.deviceId = deviceId;
+        init();
     }
 
     /**
@@ -160,7 +164,17 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         this.endpoint = endpoint;
         this.appKey = appKey;
         this.deviceId = deviceId;
+        init();
     }
+
+    private void init() {
+        okHttpClient= new OkHttpClient.Builder()
+                .dns(new DnsSelector())
+                .connectTimeout(5000L, TimeUnit.MILLISECONDS)
+                .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                .build();
+    }
+
 
     //-------- metadata --------
     @Override
@@ -217,7 +231,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     @Override
     public Profile getProfile(Context context) throws AccedoOneException {
         return createSessionedRestClient(endpoint + PATH_PROFILE)
-                .connect(new AccedoOneResponseChecker())
+                .connect(okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new ProfileParser());
     }
 
@@ -225,7 +239,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     public ApplicationStatus getApplicationStatus(Context context) {
         try {
             return createSessionedRestClient(endpoint + PATH_STATUS)
-                    .connect(new AccedoOneResponseChecker())
+                    .connect(okHttpClient, new AccedoOneResponseChecker())
                     .getParsedText(new ApplicationStatusParser());
         } catch (AccedoOneException e) {
             Utils.log(e);
@@ -246,7 +260,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
             Response response = createRestClient(endpoint + PATH_SESSION)
                     .addHeader(HEADER_APPKEY, appKey)
                     .addHeader(HEADER_USERID, deviceId)
-                    .connect(new AccedoOneResponseChecker());
+                    .connect(okHttpClient, new AccedoOneResponseChecker());
 
             serverTimeDifference = response.getServerTime() - SystemClock.elapsedRealtime();
             session = response.getParsedText(new SessionParser());

@@ -110,10 +110,9 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
                 //Send
                 Utils.log(Log.DEBUG, String.format("Sending out batch logs, with logLevel equals or higher \"%s\"", activeLogLevel.name()));
                 accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + PATH_LOGS)
-                        .setMethod(Method.POST)
+                        .setMethod(Method.POST, payload.toString())
                         .addHeader("Content-Type", "application/json")
-                        .setPayload(payload.toString())
-                        .connect(new AccedoOneResponseChecker());
+                        .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker());
 
                 return null;
             }
@@ -143,10 +142,9 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
                 }
 
                 accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + PATH_LOG_APPEVENT)
-                        .setMethod(Method.POST)
+                        .setMethod(Method.POST, payload)
                         .addHeader("Content-Type", "application/json")
-                        .setPayload(payload)
-                        .connect(new AccedoOneResponseChecker());
+                        .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker());
 
                 return null;
             }
@@ -166,7 +164,7 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
 
         //Otherwise fetch and store
         storedActiveLogLevel = accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + PATH_LOG_LEVEL)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new LogLevelParser(loglevelInvalidation));
 
         //And return

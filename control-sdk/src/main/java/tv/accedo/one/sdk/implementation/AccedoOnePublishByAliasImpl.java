@@ -45,7 +45,7 @@ public class AccedoOnePublishByAliasImpl extends Constants implements AccedoOneP
         String url = accedoOnePublishImpl.createUri(accedoOneImpl.getEndpoint() + PATH_ENTRY_BY_ALIAS + alias, new PaginatedParams(optionalParams)).toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new JSONObjectParser());
     }
 
@@ -82,7 +82,7 @@ public class AccedoOnePublishByAliasImpl extends Constants implements AccedoOneP
                 .toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PagedResponseParser());
     }
 
@@ -119,7 +119,7 @@ public class AccedoOnePublishByAliasImpl extends Constants implements AccedoOneP
                 .toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PagedResponseParser());
     }
 

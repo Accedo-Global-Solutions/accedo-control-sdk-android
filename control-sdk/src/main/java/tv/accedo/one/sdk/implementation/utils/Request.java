@@ -8,6 +8,10 @@ package tv.accedo.one.sdk.implementation.utils;
 
 import android.util.Log;
 
+
+import androidx.annotation.Nullable;
+
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpCookie;
@@ -15,6 +19,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 
 /**
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
@@ -32,9 +41,10 @@ public class Request {
     }
 
     protected String url;
-    protected HttpURLConnection httpUrlConnection;
+    //    protected HttpURLConnection httpUrlConnection;
+    okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder();
+
     protected Exception caughtCreationException;
-    protected byte[] payload;
     protected String charset = "UTF-8";
     protected ArrayList<HttpCookie> cookies = new ArrayList<HttpCookie>();
 
@@ -53,9 +63,13 @@ public class Request {
      * @param method GET, POST, PUT or DELETE
      * @return this RestClient instance for chaining
      */
-    public Request setMethod(Method method) {
+    public Request setMethod(Method method, @Nullable String payload) {
         try {
-            httpUrlConnection.setRequestMethod(method.name());
+            RequestBody body = null;
+            if (payload != null && payload.isEmpty()) {
+                body = RequestBody.create(payload.getBytes(charset));
+            }
+            requestBuilder.method(method.name(), body);
         } catch (Exception e) {
             Utils.log(e);
         }
@@ -70,8 +84,8 @@ public class Request {
      * @return this RestClient instance for chaining
      */
     public Request setHeader(String key, String value) {
-        if (httpUrlConnection != null) {
-            httpUrlConnection.setRequestProperty(key, value);
+        if (requestBuilder != null) {
+            requestBuilder.header(key, value);
         }
         return this;
     }
@@ -84,8 +98,8 @@ public class Request {
      * @return this RestClient instance for chaining
      */
     public Request addHeader(String key, String value) {
-        if (httpUrlConnection != null) {
-            httpUrlConnection.addRequestProperty(key, value);
+        if (requestBuilder != null) {
+            requestBuilder.addHeader(key, value);
         }
         return this;
     }
@@ -123,57 +137,10 @@ public class Request {
         }
 
         //Set to urlConnection
-        if (httpUrlConnection != null) {
-            httpUrlConnection.setRequestProperty("Cookie", cookieString.toString());
+        if (requestBuilder != null) {
+            requestBuilder.addHeader("Cookie", cookieString.toString());
         }
 
-        return this;
-    }
-
-    /**
-     * Sets the payload to be sent in the request body. The string will be processed with the charset active at the time this value is set.
-     * !!To make sure that this value is encoded properly, make sure the charset is set before calling this method.!!
-     *
-     * @param output The string to be sent in the request body.
-     * @return this RestClient instance for chaining
-     */
-    public Request setPayload(String payload) {
-        if (payload != null) {
-            try {
-                this.payload = payload.getBytes(charset);
-            } catch (UnsupportedEncodingException e) {
-                Utils.log(e);
-            }
-        } else {
-            this.payload = null;
-        }
-
-        return this;
-    }
-
-    /**
-     * Sets the payload to be sent in the request body.
-     *
-     * @param rawOutput The data to be sent in the request body.
-     * @return this RestClient instance for chaining
-     */
-    public Request setPayload(byte[] payload) {
-        this.payload = payload;
-        return null;
-    }
-
-    /**
-     * Sets the timeouts for the request.
-     *
-     * @param connect the timeout value for the connection to be established
-     * @param read    the timeout value for the fetching operation to be completed
-     * @return this RestClient instance for chaining
-     */
-    public Request setTimeout(int connect, int read) {
-        if (httpUrlConnection != null) {
-            httpUrlConnection.setConnectTimeout(connect);
-            httpUrlConnection.setReadTimeout(read);
-        }
         return this;
     }
 
@@ -212,22 +179,18 @@ public class Request {
 
         //Make HttpUrlConnection
         try {
-            httpUrlConnection = (HttpURLConnection) (new URL(url).openConnection());
+            requestBuilder = new okhttp3.Request.Builder()
+                    .url(url);
         } catch (Exception e) {
             caughtCreationException = e;
             Utils.log(e);
         }
 
-        //Init httpUrlConnection
-        if (httpUrlConnection != null) {
-            httpUrlConnection.setConnectTimeout(DEFAULT_TIMEOUT_CONNECT);
-            httpUrlConnection.setReadTimeout(DEFAULT_TIMEOUT_READ);
-            httpUrlConnection.setUseCaches(false);
-        }
+
     }
 
-    public <E extends Exception> Response connect(ResponseChecker<E> responseChecker) throws E {
-        Response response = fetchResponse();
+    public <E extends Exception> Response connect(OkHttpClient okHttpClient,ResponseChecker<E> responseChecker) throws E {
+        Response response = fetchResponse(okHttpClient);
 
         //Check response, and throw if necessary
         if (responseChecker != null) {
@@ -242,31 +205,49 @@ public class Request {
         return response;
     }
 
-    private Response fetchResponse() {
+    private Response fetchResponse(OkHttpClient okHttpClient) {
         Response response = new Response(url, caughtCreationException);
-        OutputStream os = null;
+//        OutputStream os = null;
 
-        if (caughtCreationException == null && httpUrlConnection != null && httpUrlConnection.getURL() != null) {
+        okhttp3.Request req = requestBuilder.build();
+
+        if (caughtCreationException == null && req.url() != null) {
             try {
                 //Logging
-                Utils.log(Log.DEBUG, "Sending " + httpUrlConnection.getRequestMethod() + " request: " + httpUrlConnection.getURL().toString());
+                Utils.log(Log.DEBUG, "Sending " + req.method() + " request: " + req.url().toString());
 
                 //Request
-                httpUrlConnection.connect();
-                if (payload != null) {
-                    os = httpUrlConnection.getOutputStream();
-                    os.write(payload);
-                    os.flush();
-                    os.close();
-                }
-                response = new Response(httpUrlConnection, url, charset);
+
+               okhttp3.Response response1 =  okHttpClient.newCall(req).execute();
+//                        .enqueue(new Callback() {
+//                    @Override
+//                    public void onResponse(@NotNull Call call, @NotNull okhttp3.Response response) throws IOException {
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//
+//                    }
+//                });
+
+
+//                httpUrlConnection.connect();
+//                if (payload != null) {
+//                    os = httpUrlConnection.getOutputStream();
+//                    os.write(payload);
+//                    os.flush();
+//                    os.close();
+//                }
+                response = new Response(response1, url, charset);
 
             } catch (Exception e) {
                 Utils.log(e);
                 response = new Response(url, e);
-            } finally {
-                Utils.closeQuietly(os);
             }
+//            finally {
+//                Utils.closeQuietly(os);
+//            }
         }
 
         return response;

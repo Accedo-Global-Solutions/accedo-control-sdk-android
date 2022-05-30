@@ -39,7 +39,7 @@ public class AccedoOneUserDataImpl implements AccedoOneUserData {
 
         //Call
         return accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + getPathForScope(scope) + userId)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new JSONMapParser());
     }
 
@@ -64,10 +64,9 @@ public class AccedoOneUserDataImpl implements AccedoOneUserData {
 
         //Call
         accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + getPathForScope(scope) + userId)
-                .setMethod(Method.POST)
+                .setMethod(Method.POST, jsonObject.toString())
                 .setHeader("Content-Type", "application/json; charset=utf-8")
-                .setPayload(jsonObject.toString())
-                .connect(new AccedoOneResponseChecker());
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker());
     }
 
     @Override
@@ -79,7 +78,7 @@ public class AccedoOneUserDataImpl implements AccedoOneUserData {
 
         //Call
         return accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + getPathForScope(scope) + userId + "/" + key)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient ,new AccedoOneResponseChecker())
                 .getText();
     }
 
@@ -92,10 +91,9 @@ public class AccedoOneUserDataImpl implements AccedoOneUserData {
 
         //Call
         accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + getPathForScope(scope) + userId + "/" + key)
-                .setMethod(Method.POST)
+                .setMethod(Method.POST, value)
                 .setHeader("Content-Type", "text/plain; charset=utf-8")
-                .setPayload(value)
-                .connect(new AccedoOneResponseChecker());
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker());
     }
 
     private String getPathForScope(Scope scope){

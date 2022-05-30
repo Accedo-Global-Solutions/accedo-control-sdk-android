@@ -54,7 +54,7 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
         String url = createUri(accedoOneImpl.getEndpoint() + PATH_ENTRY + id, new PaginatedParams(optionalParams)).toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new JSONObjectParser());
     }
 
@@ -93,7 +93,7 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
                 .toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PagedResponseParser());
     }
 
@@ -132,7 +132,7 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
                 .toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PagedResponseParser());
     }
 
@@ -163,7 +163,7 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
         String url = createUri(accedoOneImpl.getEndpoint() + PATH_ENTRIES, paginatedParams).toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PagedResponseParser());
     }
 
@@ -172,7 +172,7 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
     @Override
     public List<PublishLocale> getAvailableLocales(Context context) throws AccedoOneException {
         return accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + PATH_LOCALES)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PublishLocalesParser());
     }
 

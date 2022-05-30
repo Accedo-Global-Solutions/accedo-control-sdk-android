@@ -43,10 +43,9 @@ public class AccedoOneInsightImpl extends Constants implements AccedoOneInsight 
                 }
 
                 accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + PATH_LOG_APPEVENT)
-                        .setMethod(Method.POST)
+                        .setMethod(Method.POST,payload)
                         .addHeader("Content-Type", "application/json")
-                        .setPayload(payload)
-                        .connect(new AccedoOneResponseChecker());
+                        .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker());
 
                 return null;
             }

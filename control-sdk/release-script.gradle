@@ -5,15 +5,25 @@
  */
 
 apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
-apply plugin: 'digital.wup.android-maven-publish'
-apply from: 'javadoc.gradle'
+
+android.defaultConfig.versionCode = versionNameToCode(version)
+android.defaultConfig.versionName = version
+android.defaultConfig.buildConfigField "String", "MODULE_NAME", "\"" + project.name + "\""
+android.defaultConfig.testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
 
 publishing {
     publications {
-        aar(MavenPublication) {
-            from components.android
+        release(MavenPublication) {
+
+            groupId = project.group
+            artifactId = 'control-sdk'
+            version = project.version
+
+            afterEvaluate {
+                from components.release
+            }
         }
     }
 
@@ -41,27 +51,6 @@ artifactory {
 
         defaults {
             publications('aar')
-        }
-    }
-}
-
-bintray {
-    user = project.hasProperty('bintray_user') ? "${bintray_user}" : ""
-    key = project.hasProperty('bintray_apikey') ? "${bintray_apikey}" : ""
-    publications = ['aar']
-    publish = true
-
-    pkg {
-        repo = 'accedo-products'
-        name = 'accedo-one-sdk-android'
-        userOrg = project.hasProperty('bintray_user') ? "${bintray_user}" : ""
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/Accedo-Products/accedo-one-sdk-android.git'
-        version {
-            name = "${project.version}"
-            desc = "Accedo One Control SDK Android ${project.version}"
-            released = new Date()
-            vcsTag = "release/${project.version}"
         }
     }
 }
@@ -128,11 +117,6 @@ def versionNameToCode(versionName) {
 
     return versionName.replace('.', '') as Integer
 }
-
-android.defaultConfig.versionCode = versionNameToCode(version)
-android.defaultConfig.versionName = version
-android.defaultConfig.buildConfigField "String", "MODULE_NAME", "\"" + project.name + "\""
-android.defaultConfig.testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
 dependencies {
     androidTestImplementation 'junit:junit:4.12'

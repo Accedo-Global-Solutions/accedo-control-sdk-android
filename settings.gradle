@@ -14,8 +14,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Accedo Control SDK"
 include ':control-sdk'
-include ':control'
-include ':control:core'
-include ':control:insight'
-include ':control:publish'
-include ':control:userdata'

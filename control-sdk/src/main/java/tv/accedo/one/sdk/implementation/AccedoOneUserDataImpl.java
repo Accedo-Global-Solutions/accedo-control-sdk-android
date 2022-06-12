@@ -3,6 +3,8 @@ package tv.accedo.one.sdk.implementation;
 import android.content.Context;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,8 +32,9 @@ public class AccedoOneUserDataImpl implements AccedoOneUserData {
         this.accedoOneImpl = accedoOneImpl;
     }
 
+    @NonNull
     @Override
-    public Map<String, String> getAllUserData(Context context, Scope scope, String userId) throws AccedoOneException {
+    public Map<String, String> getAllUserData(@NonNull Context context, @NonNull Scope scope, @NonNull String userId) throws AccedoOneException {
         //Input param check
         if (TextUtils.isEmpty(userId) || scope == null) {
             throw new AccedoOneException(StatusCode.INVALID_PARAMETERS);
@@ -44,7 +47,7 @@ public class AccedoOneUserDataImpl implements AccedoOneUserData {
     }
 
     @Override
-    public void setAllUserData(Context context, Scope scope, String userId, Map<String, String> userData) throws AccedoOneException {
+    public void setAllUserData(@NonNull Context context, @NonNull Scope scope, @NonNull String userId, Map<String, String> userData) throws AccedoOneException {
         //Input param check
         if (TextUtils.isEmpty(userId) || scope == null) {
             throw new AccedoOneException(StatusCode.INVALID_PARAMETERS);
@@ -69,8 +72,9 @@ public class AccedoOneUserDataImpl implements AccedoOneUserData {
                 .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker());
     }
 
+    @NonNull
     @Override
-    public String getUserData(Context context, Scope scope, String userId, String key) throws AccedoOneException {
+    public String getUserData(@NonNull Context context, @NonNull Scope scope, @NonNull String userId, @NonNull String key) throws AccedoOneException {
         //Input param check
         if (TextUtils.isEmpty(userId) || scope == null || key == null) {
             throw new AccedoOneException(StatusCode.INVALID_PARAMETERS);
@@ -83,7 +87,7 @@ public class AccedoOneUserDataImpl implements AccedoOneUserData {
     }
 
     @Override
-    public void setUserData(Context context, Scope scope, String userId, String key, String value) throws AccedoOneException {
+    public void setUserData(@NonNull Context context, @NonNull Scope scope, @NonNull String userId, @NonNull String key, @NonNull String value) throws AccedoOneException {
         //Input param check
         if (TextUtils.isEmpty(userId) || key == null || value == null || scope == null) {
             throw new AccedoOneException(StatusCode.INVALID_PARAMETERS);
@@ -100,6 +104,7 @@ public class AccedoOneUserDataImpl implements AccedoOneUserData {
         return Scope.APPLICATION.equals(scope)? PATH_USER_APPLICATION_DATA : PATH_USER_APPLICATIONGROUP_DATA;
     }
 
+    @NonNull
     @Override
     public AsyncAccedoOneUser async() {
         return new AsyncAccedoOneUserImpl(this);

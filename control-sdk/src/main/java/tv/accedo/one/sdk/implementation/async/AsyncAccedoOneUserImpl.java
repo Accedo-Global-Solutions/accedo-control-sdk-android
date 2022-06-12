@@ -2,6 +2,8 @@ package tv.accedo.one.sdk.implementation.async;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import java.util.Map;
 
 import tv.accedo.one.sdk.definition.AccedoOneUserData;
@@ -23,7 +25,7 @@ public class AsyncAccedoOneUserImpl implements AsyncAccedoOneUser {
     }
 
     @Override
-    public Cancellable getAllUserData(final Context context, final Scope scope, final String userId, Callback<Map<String, String>> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getAllUserData(@NonNull final Context context, final Scope scope, @NonNull final String userId, Callback<Map<String, String>> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<Map<String, String>, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public Map<String, String> call() throws Exception {
@@ -33,7 +35,7 @@ public class AsyncAccedoOneUserImpl implements AsyncAccedoOneUser {
     }
 
     @Override
-    public Cancellable setAllUserData(final Context context, final Scope scope, final String userId, final Map<String, String> userData, Callback<Void> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable setAllUserData(@NonNull final Context context, final Scope scope, @NonNull final String userId, final Map<String, String> userData, Callback<Void> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<Void, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public Void call() throws Exception {
@@ -44,7 +46,7 @@ public class AsyncAccedoOneUserImpl implements AsyncAccedoOneUser {
     }
 
     @Override
-    public Cancellable getUserData(final Context context, final Scope scope, final String userId, final String key, Callback<String> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getUserData(@NonNull final Context context, final Scope scope, final String userId, final String key, Callback<String> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<String, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public String call() throws Exception {
@@ -54,7 +56,7 @@ public class AsyncAccedoOneUserImpl implements AsyncAccedoOneUser {
     }
 
     @Override
-    public Cancellable setUserData(final Context context, final Scope scope, final String userId, final String key, final String value, Callback<Void> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable setUserData(@NonNull final Context context, final Scope scope, final String userId, final String key, final String value, Callback<Void> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<Void, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public Void call() throws Exception {

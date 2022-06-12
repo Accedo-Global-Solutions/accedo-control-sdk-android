@@ -1,5 +1,7 @@
 package tv.accedo.one.sdk.implementation;
 
+import androidx.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -24,6 +26,7 @@ abstract class PaginatedFetchAllTask {
 
     public abstract PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException;
 
+    @Nullable
     public JSONArray fetchAll() throws AccedoOneException {
         JSONArray result = new JSONArray();
         PaginatedParams paginatedParams = new PaginatedParams(optionalParams).setSize(PaginatedParams.MAX_PAGE_SIZE);

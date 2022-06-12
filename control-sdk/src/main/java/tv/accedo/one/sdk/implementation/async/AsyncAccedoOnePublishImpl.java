@@ -2,6 +2,8 @@ package tv.accedo.one.sdk.implementation.async;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -30,7 +32,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
 
 
     @Override
-    public Cancellable getEntry(final Context context, final String id, Callback<JSONObject> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntry(@NonNull final Context context, @NonNull final String id, Callback<JSONObject> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONObject, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONObject call() throws Exception {
@@ -40,7 +42,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getEntry(final Context context, final String id, final OptionalParams optionalParams, Callback<JSONObject> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntry(@NonNull final Context context, @NonNull final String id, final OptionalParams optionalParams, Callback<JSONObject> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONObject, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONObject call() throws Exception {
@@ -50,7 +52,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final String typeId, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final String typeId, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONArray, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONArray call() throws Exception {
@@ -60,7 +62,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final String typeId, final OptionalParams optionalParams, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final String typeId, final OptionalParams optionalParams, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONArray, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONArray call() throws Exception {
@@ -70,7 +72,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final String typeId, final PaginatedParams paginatedParams, Callback<PagedResponse> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final String typeId, final PaginatedParams paginatedParams, Callback<PagedResponse> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<PagedResponse, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public PagedResponse call() throws Exception {
@@ -80,7 +82,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final List<String> ids, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final List<String> ids, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONArray, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONArray call() throws Exception {
@@ -90,7 +92,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final List<String> ids, final OptionalParams optionalParams, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final List<String> ids, final OptionalParams optionalParams, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONArray, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONArray call() throws Exception {
@@ -100,7 +102,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final List<String> ids, final PaginatedParams paginatedParams, Callback<PagedResponse> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final List<String> ids, final PaginatedParams paginatedParams, Callback<PagedResponse> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<PagedResponse, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public PagedResponse call() throws Exception {
@@ -110,7 +112,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getAllEntries(final Context context, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getAllEntries(@NonNull final Context context, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONArray, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONArray call() throws Exception {
@@ -120,7 +122,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getAllEntries(final Context context, final OptionalParams optionalParams, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getAllEntries(@NonNull final Context context, final OptionalParams optionalParams, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONArray, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONArray call() throws Exception {
@@ -130,7 +132,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getAllEntries(final Context context, final PaginatedParams paginatedParams, Callback<PagedResponse> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getAllEntries(@NonNull final Context context, final PaginatedParams paginatedParams, Callback<PagedResponse> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<PagedResponse, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public PagedResponse call() throws Exception {
@@ -140,7 +142,7 @@ public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
     }
 
     @Override
-    public Cancellable getAvailableLocales(final Context context, Callback<List<PublishLocale>> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getAvailableLocales(@NonNull final Context context, Callback<List<PublishLocale>> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<List<PublishLocale>, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public List<PublishLocale> call() throws Exception {

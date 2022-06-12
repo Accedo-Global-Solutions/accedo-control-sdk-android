@@ -1,5 +1,8 @@
 package tv.accedo.one.sdk.model;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,12 +14,16 @@ import tv.accedo.one.sdk.implementation.utils.Utils;
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class LogEntry {
+    @NonNull
     private final LogLevel logLevel;
     private final long timestamp;
     private final int code;
+    @Nullable
     private final String message;
+    @Nullable
     private final String[] dimensions;
 
+    @NonNull
     public LogLevel getLogLevel() {
         return logLevel;
     }
@@ -37,7 +44,7 @@ public class LogEntry {
         return dimensions;
     }
 
-    public LogEntry(LogLevel logLevel, long timestamp, int code, String message, String... dimensions) {
+    public LogEntry(@NonNull LogLevel logLevel, long timestamp, int code, @Nullable String message, @Nullable String... dimensions) {
         this.logLevel = logLevel;
         this.timestamp = timestamp;
         this.code = code;
@@ -56,7 +63,7 @@ public class LogEntry {
     public JSONObject toJSONObject() {
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("logType", logLevel != null ? logLevel.name() : null);
+            jsonObject.put("logType", logLevel.name());
             jsonObject.put("timestamp", timestamp);
             jsonObject.put("code", code);
             jsonObject.put("message", message);
@@ -71,6 +78,7 @@ public class LogEntry {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         return toJSONObject().toString();
@@ -95,7 +103,7 @@ public class LogEntry {
 
     @Override
     public int hashCode() {
-        int result = logLevel != null ? logLevel.hashCode() : 0;
+        int result = logLevel.hashCode();
         result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
         result = 31 * result + code;
         result = 31 * result + (message != null ? message.hashCode() : 0);

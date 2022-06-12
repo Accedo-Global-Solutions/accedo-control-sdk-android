@@ -81,27 +81,6 @@ dependencies {
 ```
 
 </p>
-</details> 
-
-
-<details>
-<summary>Setup using Bintray (Which will be deprecated soon!)</summary>
-<p>
-
-```groovy
-// In root build.gradle
-maven {
-    // JFrog Bintray url
-    url  "https://dl.bintray.com/tibor-pasztor-accedo/accedo-products"
-}
-
-// In project module
-dependencies {
-    implementation 'tv.accedo.one:control-sdk:<latest>'
-}
-```
-
-</p>
 </details>
 
 - Create a singleton instance of AccedoOne in your service holder or application such as:

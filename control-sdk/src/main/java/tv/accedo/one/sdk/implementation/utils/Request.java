@@ -41,7 +41,7 @@ public class Request {
     }
 
     protected String url;
-    //    protected HttpURLConnection httpUrlConnection;
+
     okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder();
 
     protected Exception caughtCreationException;
@@ -207,47 +207,25 @@ public class Request {
 
     private Response fetchResponse(OkHttpClient okHttpClient) {
         Response response = new Response(url, caughtCreationException);
-//        OutputStream os = null;
 
         okhttp3.Request req = requestBuilder.build();
 
-        if (caughtCreationException == null && req.url() != null) {
+        if (caughtCreationException == null) {
+            req.url();
             try {
                 //Logging
-                Utils.log(Log.DEBUG, "Sending " + req.method() + " request: " + req.url().toString());
+                Utils.log(Log.DEBUG, "Sending " + req.method() + " request: " + req.url());
 
                 //Request
+                okhttp3.Response okHttpResponse = okHttpClient.newCall(req).execute();
 
-               okhttp3.Response response1 =  okHttpClient.newCall(req).execute();
-//                        .enqueue(new Callback() {
-//                    @Override
-//                    public void onResponse(@NotNull Call call, @NotNull okhttp3.Response response) throws IOException {
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//
-//                    }
-//                });
-
-
-//                httpUrlConnection.connect();
-//                if (payload != null) {
-//                    os = httpUrlConnection.getOutputStream();
-//                    os.write(payload);
-//                    os.flush();
-//                    os.close();
-//                }
-                response = new Response(response1, url, charset);
+                response = new Response(okHttpResponse, url, charset);
 
             } catch (Exception e) {
                 Utils.log(e);
                 response = new Response(url, e);
             }
-//            finally {
-//                Utils.closeQuietly(os);
-//            }
+
         }
 
         return response;

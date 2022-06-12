@@ -46,10 +46,8 @@ public class Response {
      * @return the response body, string encoded with the charset of the RestClient instance, that created this Response
      */
     public String getText() {
-        byte[] output = response;
-
         try {
-            return new String(output, charset);
+            return new String(response, charset);
         } catch (Exception e) {
             return null;
         }
@@ -120,32 +118,26 @@ public class Response {
     /**
      * The constructor to use when the connection was successful.
      *
-     * @param httpUrlConnection the underlying httpUrlConnection used.
-     * @param url the url we were connecting to.
-     * @param charset the charset used, the default being {@link Request.charset}.
-     * @param logLevel the logLevel used by this restClient instance, the default being {@link LogLevel.NORMAL}
+     * @param okHttpResponse actual response from OkHttp3.
+     * @param url            the url we were connecting to.
+     * @param charset        the charset used, the default being {@link Request.charset}.
      */
-    public Response(okhttp3.Response resp, String url, String charset) {
+    public Response(@NonNull okhttp3.Response okHttpResponse, @NonNull String url, @NonNull Charset charset) {
         this.url = url;
         this.charset = charset;
 
         //Code & Body
-        InputStream inputStream = null;
         try {
-            code = resp.code();
-            inputStream = resp.body().byteStream();
-            response = Utils.toByteArray(inputStream);
+            code = okHttpResponse.code();
+            response = okHttpResponse.body().bytes();
 
         } catch (Exception e) {
             this.caughtException = e;
-        } finally {
-            Utils.closeQuietly(inputStream);
         }
 
         //Headers
-        if (resp != null && resp.headers() != null) {
-            headers.putAll(resp.headers().toMultimap());
-        }
+        okHttpResponse.headers();
+        headers.putAll(okHttpResponse.headers().toMultimap());
 
         //Logging
         Utils.log(Log.DEBUG, "Response " + code + " for: " + getUrl() + "\n" + getText());

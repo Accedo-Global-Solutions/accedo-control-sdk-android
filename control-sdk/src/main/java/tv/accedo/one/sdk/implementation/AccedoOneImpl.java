@@ -24,6 +24,8 @@ import tv.accedo.one.sdk.definition.AccedoOne;
 import tv.accedo.one.sdk.definition.AccedoOneUserData;
 import tv.accedo.one.sdk.definition.async.AsyncAccedoOneControl;
 import tv.accedo.one.sdk.implementation.async.AsyncAccedoOneControlImpl;
+import tv.accedo.one.sdk.implementation.utils.DnsSelector;
+import tv.accedo.one.sdk.implementation.utils.NetworkConfiguration;
 import tv.accedo.one.sdk.implementation.utils.Utils;
 import tv.accedo.one.sdk.implementation.utils.Response;
 import tv.accedo.one.sdk.implementation.utils.Request;
@@ -152,27 +154,44 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     public AccedoOneImpl(String appKey, String deviceId) {
         this.appKey = appKey;
         this.deviceId = deviceId;
-        init();
+        initNetworkClient(new NetworkConfiguration.Builder().build());
+    }
+
+    public AccedoOneImpl(String appKey, String deviceId, NetworkConfiguration networkConfiguration) {
+        this.appKey = appKey;
+        this.deviceId = deviceId;
+        initNetworkClient(networkConfiguration);
     }
 
     /**
      * @param endpoint The endpoint to connect to. The default is {@link Constants.DEFAULT_ENDPOINT}.
-     * @param appKey the hash of your Application inside Accedo One to connect to.
+     * @param appKey   the hash of your Application inside Accedo One to connect to.
      * @param deviceId a unique identifier of your device. (Eg AndroidID)
      */
     public AccedoOneImpl(String endpoint, String appKey, String deviceId) {
         this.endpoint = endpoint;
         this.appKey = appKey;
         this.deviceId = deviceId;
-        init();
+        initNetworkClient(new NetworkConfiguration.Builder().build());
     }
 
-    private void init() {
-        okHttpClient= new OkHttpClient.Builder()
-                .dns(new DnsSelector())
-                .connectTimeout(5000L, TimeUnit.MILLISECONDS)
-                .readTimeout(10000L, TimeUnit.MILLISECONDS)
-                .build();
+    public AccedoOneImpl(String endpoint, String appKey, String deviceId, NetworkConfiguration networkConfiguration) {
+        this.endpoint = endpoint;
+        this.appKey = appKey;
+        this.deviceId = deviceId;
+        initNetworkClient(networkConfiguration);
+    }
+
+    private void initNetworkClient(NetworkConfiguration networkConfiguration) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(networkConfiguration.getConnectionTimeout(), TimeUnit.MILLISECONDS)
+                .readTimeout(networkConfiguration.getReadTimeout(), TimeUnit.MILLISECONDS);
+
+        if (networkConfiguration.isPrioritizeIpv4OverIpv6()) {
+            builder.dns(new DnsSelector());
+        }
+
+        okHttpClient = builder.build();
     }
 
 

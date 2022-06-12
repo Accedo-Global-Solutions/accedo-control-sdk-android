@@ -1,5 +1,9 @@
 ## Changelog ##
 
+v1.2.0 (2022-06-14)
+
+* Removed HttpUrlConnection and added OkHttp3
+
 v1.1.1 (2021-02-04)
 
 * Catching NullPointer in SessionParser

@@ -1,20 +1,19 @@
-# Accedo One SDK for Android
+# Accedo Control SDK for Android
 
 ```
-   _                    _           ___
-  /_\   ___ ___ ___  __| | ___     /___\_ __   ___
- //_\\ / __/ __/ _ \/ _` |/ _ \   //  // '_ \ / _ \
-/  _  \ (_| (_|  __/ (_| | (_) | / \_//| | | |  __/
-\_/ \_/\___\___\___|\__,_|\___/  \___/ |_| |_|\___|
-
+   _                    _           ___            _             _ 
+  /_\   ___ ___ ___  __| | ___     / __\___  _ __ | |_ _ __ ___ | |
+ //_\\ / __/ __/ _ \/ _` |/ _ \   / /  / _ \| '_ \| __| '__/ _ \| |
+/  _  \ (_| (_|  __/ (_| | (_) | / /__| (_) | | | | |_| | | (_) | |
+\_/ \_/\___\___\___|\__,_|\___/  \____/\___/|_| |_|\__|_|  \___/|_|                                                          
 ```
 
 [ ![Download](https://api.bintray.com/packages/tibor-pasztor-accedo/accedo-products/accedo-one-sdk-android/images/download.svg) ](https://bintray.com/tibor-pasztor-accedo/accedo-products/accedo-one-sdk-android/_latestVersion)
 
 ## Summary
 
-This is the official [Accedo One](https://www.accedo.tv/one) SDK for Android 4.0 and up, previously known as the VDK AppGrid component.
-While Accedo One exposes a set of friendly REST APIs, this SDK is intended to provide a smoother experience when coding in Android, providing seamless sync/async services, with automatic caching, and offline mode.
+This is the official [Accedo Control](https://www.accedo.tv/one) SDK for Android 4.0 and up, previously known as the VDK AppGrid component.
+While Accedo Control exposes a set of friendly REST APIs, this SDK is intended to provide a smoother experience when coding in Android, providing seamless sync/async services, with automatic caching, and offline mode.
 
 We follow [semantic versioning](http://semver.org/).
 Check the [change log](./CHANGELOG.md) for a listing of changes and new features per version.

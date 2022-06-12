@@ -11,19 +11,12 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpCookie;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 
@@ -32,8 +25,6 @@ import okhttp3.RequestBody;
  */
 public class Request {
     public static final String TAG = "RestClient";
-    protected static final int DEFAULT_TIMEOUT_CONNECT = 5000;
-    protected static final int DEFAULT_TIMEOUT_READ = 10000;
 
     public static enum Method {
         GET,

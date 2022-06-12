@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,9 +32,9 @@ public class Response {
 
     private int code = -1;
     private byte[] response;
-    private Charset charset;
     private String url;
     private Map<String, List<String>> headers = new HashMap<>();
+    private Charset charset = StandardCharsets.UTF_8;
     private Exception caughtException;
 
     /**

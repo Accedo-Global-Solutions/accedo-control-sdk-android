@@ -17,6 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class Request {
     okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder();
 
     protected Exception caughtCreationException;
-    protected String charset = "UTF-8";
+    protected Charset charset = StandardCharsets.UTF_8;
     protected ArrayList<HttpCookie> cookies = new ArrayList<HttpCookie>();
 
     protected OnResponseListener onResponseListener;
@@ -150,7 +152,7 @@ public class Request {
      * @param charset the RestClient instance should use. Doesn't accept null.
      * @return this RestClient instance for chaining
      */
-    public Request setCharset(String charset) {
+    public Request setCharset(Charset charset) {
         if (charset != null) {
             this.charset = charset;
         }

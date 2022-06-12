@@ -187,7 +187,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
                 .connectTimeout(networkConfiguration.getConnectionTimeout(), TimeUnit.MILLISECONDS)
                 .readTimeout(networkConfiguration.getReadTimeout(), TimeUnit.MILLISECONDS);
 
-        if (networkConfiguration.isPrioritizeIpv4OverIpv6()) {
+        if (networkConfiguration.isForceIpv4()) {
             builder.dns(new DnsSelector());
         }
 

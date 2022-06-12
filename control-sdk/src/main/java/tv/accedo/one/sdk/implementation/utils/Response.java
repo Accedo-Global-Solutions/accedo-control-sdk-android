@@ -9,6 +9,7 @@ package tv.accedo.one.sdk.implementation.utils;
 import android.util.Log;
 
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,7 +31,7 @@ public class Response {
 
     private int code = -1;
     private byte[] response;
-    private String charset;
+    private Charset charset;
     private String url;
     private Map<String, List<String>> headers = new HashMap<>();
     private Exception caughtException;
@@ -122,7 +123,7 @@ public class Response {
      * @param url            the url we were connecting to.
      * @param charset        the charset used, the default being {@link Request.charset}.
      */
-    public Response(@NonNull okhttp3.Response okHttpResponse, @NonNull String url, @NonNull Charset charset) {
+    public Response(okhttp3.Response okHttpResponse, String url, Charset charset) {
         this.url = url;
         this.charset = charset;
 

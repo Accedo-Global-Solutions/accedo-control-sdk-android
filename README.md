@@ -85,8 +85,8 @@ dependencies {
 
 - Create a singleton instance of AccedoOne in your service holder or application such as:
 
-```java
-static final AccedoOne accedoOne = new AccedoOneImpl("appKey", getDeviceId());
+```kotlin
+val accedoControl :AccedoOne = AccedoOneImpl("appKey", getDeviceId())
 ```
 
 - Use this instance to access AccedoOne anywhere!
@@ -101,11 +101,11 @@ The SDK provides you with both sync and async calls for almost every API it expo
 
 Sync example:
 
-```java
-try {
-    String result = accedoOne.control().getMetadata(context, "base_url");
-} catch (AccedoOneException e) {
-    e.printStackTrace();
+```kotlin
+val result: String = withContext(Dispatchers.IO) {
+  kotlin.runCatching {
+    accedoOne.control().getMetadata(context, "base_url")
+  }
 }
 ```
 
@@ -129,11 +129,11 @@ Please note the cancellable returned by async calls. Those can be useful if you'
 
 ### Publish example
 
-```java
-try {
-    JSONObject result = accedoOne.publish().getEntry(context, "hashId");
-} catch (AccedoOneException e) {
-    e.printStackTrace();
+```kotlin
+val result: JSONObject = withContext(Dispatchers.IO) {
+  kotlin.runCatching {
+    accedoOne.publish().getEntry(context, "hashId")
+  }
 }
 ```
 

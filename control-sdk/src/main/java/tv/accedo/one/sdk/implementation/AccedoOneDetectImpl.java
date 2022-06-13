@@ -124,7 +124,7 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
 
             @Override
             public void onFailure(Exception caughtException) {
-               Utils.log(caughtException);
+                Utils.log(caughtException);
                 handler.sendMessageDelayed(Message.obtain(handler, MESSAGE_PURGE), loggingPeriod);
             }
         }.executeAndReturn();

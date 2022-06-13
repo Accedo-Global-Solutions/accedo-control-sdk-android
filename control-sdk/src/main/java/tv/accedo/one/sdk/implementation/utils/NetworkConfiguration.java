@@ -46,25 +46,40 @@ public class NetworkConfiguration {
 
         private long connectionTimeout = DEFAULT_TIMEOUT_CONNECT;
         private long readTimeout = DEFAULT_TIMEOUT_READ;
-        private boolean prioritizeIpv4OverIpv6 = false;
+        private boolean forceIpv4 = false;
 
+        /**
+         * Modifies the current connection timeout in Ms
+         *
+         * @param connectionTimeout
+         */
         public Builder setConnectionTimeout(long connectionTimeout) {
             this.connectionTimeout = connectionTimeout;
             return this;
         }
 
+        /**
+         * Modifies the current read timeout in Ms
+         *
+         * @param readTimeout
+         */
         public Builder setReadTimeout(long readTimeout) {
             this.readTimeout = readTimeout;
             return this;
         }
 
-        public Builder setPrioritizeIpv4OverIpv6(boolean prioritizeIpv4OverIpv6) {
-            this.prioritizeIpv4OverIpv6 = prioritizeIpv4OverIpv6;
+        /**
+         * Forcing ipv4 over ipv6
+         *
+         * @param forceIpv4 Default is false
+         */
+        public Builder setForceIpv4(boolean forceIpv4) {
+            this.forceIpv4 = forceIpv4;
             return this;
         }
 
         public NetworkConfiguration build() {
-            return new NetworkConfiguration(connectionTimeout, readTimeout, prioritizeIpv4OverIpv6);
+            return new NetworkConfiguration(connectionTimeout, readTimeout, forceIpv4);
         }
     }
 }

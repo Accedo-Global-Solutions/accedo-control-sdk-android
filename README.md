@@ -108,7 +108,10 @@ dependencies {
 - Create a singleton instance of AccedoOne in your service holder or application such as:
 
 ```java
-static final AccedoOne accedoOne = new AccedoOneImpl("appKey", getDeviceId());
+// Optional for http configuration
+NetworkConfiguration configuration = new NetworkConfiguration.Builder().setForceIpv4(true).build();
+
+static final AccedoOne accedoOne = new AccedoOneImpl("appKey", getDeviceId(), configuration);
 ```
 
 - Use this instance to access AccedoOne anywhere!

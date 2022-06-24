@@ -1,6 +1,6 @@
 ## Changelog ##
 
-v1.1.2 (2022-06-12)
+v1.1.2 (2022-06-24)
 
 * Save timestamp only if write was successful.
 

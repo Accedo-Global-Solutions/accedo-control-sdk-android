@@ -1,5 +1,9 @@
 ## Changelog ##
 
+v1.1.2 (2022-06-24)
+
+* Save timestamp only if write was successful.
+
 v1.1.1 (2021-02-04)
 
 * Catching NullPointer in SessionParser

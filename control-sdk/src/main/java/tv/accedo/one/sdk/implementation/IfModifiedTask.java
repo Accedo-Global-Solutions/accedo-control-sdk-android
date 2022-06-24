@@ -76,8 +76,10 @@ class IfModifiedTask {
         if (response != null && response.isSuccess()) {
             //Store if we've successfuly fetched something
             O result = parser.parse(response.getRawResponse());
-            InternalStorage.write(context, response.getRawResponse(), key);
-            InternalStorage.write(context, response.getServerTime(), timestampKey);
+            if (InternalStorage.write(context, response.getRawResponse(), key)) {
+                // Save timestamp only if write was successful. (eg. there's not enough space)
+                InternalStorage.write(context, response.getServerTime(), timestampKey);
+            }
             Utils.log(Log.INFO, "Storing in offline cache: "+ request.getUrl());
             return result;
         

@@ -172,8 +172,7 @@ public class Request {
 
         //Make HttpUrlConnection
         try {
-            requestBuilder = new okhttp3.Request.Builder()
-                    .url(url);
+            requestBuilder = new okhttp3.Request.Builder().url(url);
         } catch (Exception e) {
             caughtCreationException = e;
             Utils.log(e);

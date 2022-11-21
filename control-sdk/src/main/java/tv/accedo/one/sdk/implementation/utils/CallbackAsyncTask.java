@@ -11,7 +11,7 @@ import tv.accedo.one.sdk.definition.async.Callback;
 import tv.accedo.one.sdk.definition.async.Cancellable;
 
 /**
- * Created by Pásztor Tibor Viktor <tibor.pasztor@accedo.tv> on 2017. 10. 09..
+ * Created by Pásztor Tibor Viktor <tibor.pasztor@accedo.tv> on 2017. 10. 09.
  */
 @SuppressLint("StaticFieldLeak")
 public abstract class CallbackAsyncTask<Result, E extends Exception> extends AsyncTask<Void, Void, Result> implements Cancellable {

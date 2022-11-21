@@ -11,10 +11,12 @@ public class NetworkConfiguration {
      * Connection timeout in milliseconds
      */
     private final long connectionTimeout;
+
     /**
      * Connection timeout in milliseconds
      */
     private final long readTimeout;
+
     /**
      * Prioritizes ipv4 over ipv6
      * Default false
@@ -51,7 +53,7 @@ public class NetworkConfiguration {
         /**
          * Modifies the current connection timeout in Ms
          *
-         * @param connectionTimeout
+         * @param connectionTimeout API connection timeout in milliseconds
          */
         public Builder setConnectionTimeout(long connectionTimeout) {
             this.connectionTimeout = connectionTimeout;
@@ -61,7 +63,7 @@ public class NetworkConfiguration {
         /**
          * Modifies the current read timeout in Ms
          *
-         * @param readTimeout
+         * @param readTimeout API response read timeout in milliseconds
          */
         public Builder setReadTimeout(long readTimeout) {
             this.readTimeout = readTimeout;

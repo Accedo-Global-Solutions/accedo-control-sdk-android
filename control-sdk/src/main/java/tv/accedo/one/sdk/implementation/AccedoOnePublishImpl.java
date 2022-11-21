@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import tv.accedo.one.sdk.definition.AccedoOnePublishByAlias;
@@ -38,7 +39,7 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
 
     public AccedoOnePublishImpl(AccedoOneImpl accedoOneImpl) {
         this.accedoOneImpl = accedoOneImpl;
-        this.sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        this.sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
         this.sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
@@ -88,8 +89,8 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
     @NonNull
     @Override
     public PagedResponse getEntries(@NonNull Context context, @NonNull String typeId, PaginatedParams paginatedParams) throws AccedoOneException {
-        if (typeId == null) {
-            throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"typeId\" can not be null.");
+        if (typeId.isEmpty()) {
+            throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"typeId\" can not be empty.");
         }
 
         String url = createUri(accedoOneImpl.getEndpoint() + PATH_ENTRIES, paginatedParams)

@@ -18,9 +18,10 @@ import tv.accedo.one.sdk.definition.async.Callback;
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class AsyncAccedoOneUserImpl implements AsyncAccedoOneUser {
-    private AccedoOneUserData accedoOneUserData;
+    @NonNull
+    private final AccedoOneUserData accedoOneUserData;
 
-    public AsyncAccedoOneUserImpl(AccedoOneUserData accedoOneUserData) {
+    public AsyncAccedoOneUserImpl(@NonNull AccedoOneUserData accedoOneUserData) {
         this.accedoOneUserData = accedoOneUserData;
     }
 

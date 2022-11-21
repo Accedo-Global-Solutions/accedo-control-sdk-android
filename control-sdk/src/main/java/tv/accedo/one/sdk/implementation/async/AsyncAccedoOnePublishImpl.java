@@ -24,9 +24,10 @@ import tv.accedo.one.sdk.definition.async.Callback;
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class AsyncAccedoOnePublishImpl implements AsyncAccedoOnePublish {
-    private AccedoOnePublish accedoOnePublish;
+    @NonNull
+    private final AccedoOnePublish accedoOnePublish;
 
-    public AsyncAccedoOnePublishImpl(AccedoOnePublish accedoOnePublish) {
+    public AsyncAccedoOnePublishImpl(@NonNull AccedoOnePublish accedoOnePublish) {
         this.accedoOnePublish = accedoOnePublish;
     }
 

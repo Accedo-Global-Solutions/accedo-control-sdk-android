@@ -11,7 +11,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
@@ -97,7 +96,7 @@ public class Response {
      * @return the first value for that header or an empty string
      */
     public String getFirstHeader(String name) {
-        List<String> values = headers.get(name);
+        List<String> values = headers.get(name.toLowerCase(Locale.US));
         if (values != null && !values.isEmpty()) {
             return values.get(0);
         }
@@ -148,7 +147,6 @@ public class Response {
         }
 
         //Headers
-        okHttpResponse.headers();
         headers.putAll(okHttpResponse.headers().toMultimap());
 
         //Logging
@@ -161,7 +159,7 @@ public class Response {
      * @param url    the url we wanted to connect to.
      * @param reason the reason why we couldn't connect.
      */
-    public Response(@NonNull String url, Exception reason) {
+    public Response(@NonNull String url, @Nullable Exception reason) {
         this.url = url;
         this.caughtException = reason;
     }
@@ -171,7 +169,7 @@ public class Response {
      *
      * @param parser
      * @return The domain parsed variant of this Response's body
-     * @throws Exceptions, thrown by the parser.
+     * @throws Exception, thrown by the parser.
      */
     public <T, E extends Exception> T getParsedText(ThrowingParser<Response, T, E> parser) throws E {
         return parser.parse(this);

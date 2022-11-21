@@ -25,7 +25,7 @@ public class AsyncAccedoOneControlImpl implements AsyncAccedoOneControl {
     @NonNull
     private final AccedoOneControl accedoOneControl;
 
-    public AsyncAccedoOneControlImpl(AccedoOneControl accedoOneControl) {
+    public AsyncAccedoOneControlImpl(@NonNull AccedoOneControl accedoOneControl) {
         this.accedoOneControl = accedoOneControl;
     }
 

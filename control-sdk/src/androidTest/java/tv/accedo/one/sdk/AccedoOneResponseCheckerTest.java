@@ -21,7 +21,7 @@ import static tv.accedo.one.sdk.Shared.DEVICE_ID;
 import static tv.accedo.one.sdk.Shared.getContext;
 import static junit.framework.Assert.assertTrue;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class AccedoOneResponseCheckerTest {

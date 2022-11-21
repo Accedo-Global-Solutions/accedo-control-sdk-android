@@ -38,7 +38,7 @@ import static tv.accedo.one.sdk.Shared.DEVICE_ID;
 import static tv.accedo.one.sdk.Shared.getContext;
 import static tv.accedo.one.sdk.implementation.Constants.PATH_METADATA;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class AccedoOneCacheTest {

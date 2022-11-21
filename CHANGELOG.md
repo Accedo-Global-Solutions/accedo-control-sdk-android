@@ -6,7 +6,7 @@ v1.2.1 (2022-XX-XX)
 
 v1.2.0 (2022-06-14)
 
-* Removed HttpUrlConnection and added OkHttp3
+* Removed HttpUrlConnection and added OkHttp3 dependency
 
 v1.1.1 (2021-02-04)
 

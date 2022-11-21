@@ -7,7 +7,6 @@
 package tv.accedo.one.sdk;
 
 import android.content.Context;
-import android.support.test.runner.AndroidJUnit4;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,6 +33,8 @@ import static tv.accedo.one.sdk.Shared.getContext;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class MockOnePublishTest {

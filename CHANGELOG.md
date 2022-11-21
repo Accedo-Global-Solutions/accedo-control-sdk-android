@@ -4,6 +4,14 @@ v1.1.2 (2022-06-24)
 
 * Save timestamp only if write was successful.
 
+v1.2.1 (2022-11-21)
+
+* Added nullable annotations
+
+v1.2.0 (2022-06-14)
+
+* Removed HttpUrlConnection and added OkHttp3 dependency
+
 v1.1.1 (2021-02-04)
 
 * Catching NullPointer in SessionParser

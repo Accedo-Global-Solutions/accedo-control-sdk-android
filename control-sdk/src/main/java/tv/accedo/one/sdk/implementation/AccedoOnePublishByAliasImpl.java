@@ -2,6 +2,8 @@ package tv.accedo.one.sdk.implementation;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,26 +33,29 @@ public class AccedoOnePublishByAliasImpl extends Constants implements AccedoOneP
         this.accedoOnePublishImpl = accedoOnePublishImpl;
     }
 
+    @NonNull
     @Override
-    public JSONObject getEntry(Context context, String alias) throws AccedoOneException {
+    public JSONObject getEntry(@NonNull Context context, @NonNull String alias) throws AccedoOneException {
         return getEntry(context, alias, null);
     }
 
+    @NonNull
     @Override
-    public JSONObject getEntry(Context context, String alias, OptionalParams optionalParams) throws AccedoOneException {
-        if(alias==null){
+    public JSONObject getEntry(@NonNull Context context, @NonNull String alias, OptionalParams optionalParams) throws AccedoOneException {
+        if (alias.isEmpty()) {
             throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"alias\" can not be null.");
         }
 
         String url = accedoOnePublishImpl.createUri(accedoOneImpl.getEndpoint() + PATH_ENTRY_BY_ALIAS + alias, new PaginatedParams(optionalParams)).toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new JSONObjectParser());
     }
 
+    @NonNull
     @Override
-    public JSONArray getEntries(final Context context, final String typeAlias) throws AccedoOneException {
+    public JSONArray getEntries(@NonNull final Context context, @NonNull final String typeAlias) throws AccedoOneException {
         return new PaginatedFetchAllTask() {
             @Override
             public PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException {
@@ -59,8 +64,9 @@ public class AccedoOnePublishByAliasImpl extends Constants implements AccedoOneP
         }.fetchAll();
     }
 
+    @NonNull
     @Override
-    public JSONArray getEntries(final Context context, final String typeAlias, OptionalParams optionalParams) throws AccedoOneException {
+    public JSONArray getEntries(@NonNull final Context context, @NonNull final String typeAlias, OptionalParams optionalParams) throws AccedoOneException {
         return new PaginatedFetchAllTask(optionalParams) {
             @Override
             public PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException {
@@ -69,9 +75,10 @@ public class AccedoOnePublishByAliasImpl extends Constants implements AccedoOneP
         }.fetchAll();
     }
 
+    @NonNull
     @Override
-    public PagedResponse getEntries(Context context, String typeAlias, PaginatedParams paginatedParams) throws AccedoOneException {
-        if(typeAlias==null){
+    public PagedResponse getEntries(@NonNull Context context, @NonNull String typeAlias, PaginatedParams paginatedParams) throws AccedoOneException {
+        if (typeAlias.isEmpty()) {
             throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"typeAlias\" can not be null.");
         }
 
@@ -82,12 +89,13 @@ public class AccedoOnePublishByAliasImpl extends Constants implements AccedoOneP
                 .toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PagedResponseParser());
     }
 
+    @NonNull
     @Override
-    public JSONArray getEntries(final Context context, final List<String> aliases) throws AccedoOneException {
+    public JSONArray getEntries(@NonNull final Context context, @NonNull final List<String> aliases) throws AccedoOneException {
         return new PaginatedFetchAllTask() {
             @Override
             public PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException {
@@ -96,8 +104,9 @@ public class AccedoOnePublishByAliasImpl extends Constants implements AccedoOneP
         }.fetchAll();
     }
 
+    @NonNull
     @Override
-    public JSONArray getEntries(final Context context, final List<String> aliases, OptionalParams optionalParams) throws AccedoOneException {
+    public JSONArray getEntries(@NonNull final Context context, @NonNull final List<String> aliases, OptionalParams optionalParams) throws AccedoOneException {
         return new PaginatedFetchAllTask(optionalParams) {
             @Override
             public PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException {
@@ -106,9 +115,10 @@ public class AccedoOnePublishByAliasImpl extends Constants implements AccedoOneP
         }.fetchAll();
     }
 
+    @NonNull
     @Override
-    public PagedResponse getEntries(Context context, List<String> aliases, PaginatedParams paginatedParams) throws AccedoOneException {
-        if(aliases==null || aliases.isEmpty()){
+    public PagedResponse getEntries(@NonNull Context context, @NonNull List<String> aliases, PaginatedParams paginatedParams) throws AccedoOneException {
+        if (aliases.isEmpty()) {
             throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"aliases\" can not be null or empty.");
         }
 
@@ -119,10 +129,11 @@ public class AccedoOnePublishByAliasImpl extends Constants implements AccedoOneP
                 .toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PagedResponseParser());
     }
 
+    @NonNull
     @Override
     public AsyncAccedoOnePublishByAlias async() {
         return new AsyncAccedoOnePublishByAliasImpl(this);

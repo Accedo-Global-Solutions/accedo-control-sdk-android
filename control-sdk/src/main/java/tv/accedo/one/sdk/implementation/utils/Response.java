@@ -8,8 +8,11 @@ package tv.accedo.one.sdk.implementation.utils;
 
 import android.util.Log;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,10 +34,11 @@ public class Response {
 
     private int code = -1;
     private byte[] response;
-    private HttpURLConnection httpUrlConnection;
-    private String charset;
-    private String url;
-    private Map<String, List<String>> headers = new HashMap<>();
+    private Charset charset = StandardCharsets.UTF_8;
+    @NonNull
+    private final String url;
+    private final Map<String, List<String>> headers = new HashMap<>();
+    @Nullable
     private Exception caughtException;
 
     /**
@@ -47,11 +51,10 @@ public class Response {
     /**
      * @return the response body, string encoded with the charset of the RestClient instance, that created this Response
      */
+    @Nullable
     public String getText() {
-        byte[] output = response;
-
         try {
-            return new String(output, charset);
+            return new String(response, charset);
         } catch (Exception e) {
             return null;
         }
@@ -60,6 +63,7 @@ public class Response {
     /**
      * @return the raw response body
      */
+    @Nullable
     public byte[] getRawResponse() {
         return response;
     }
@@ -74,6 +78,7 @@ public class Response {
     /**
      * @return the url fetched
      */
+    @NonNull
     public String getUrl() {
         return url;
     }
@@ -81,6 +86,7 @@ public class Response {
     /**
      * @return a map of response headers, or an empty map if no connection was established (never null)
      */
+    @NonNull
     public Map<String, List<String>> getHeaders() {
         return headers;
     }
@@ -90,7 +96,7 @@ public class Response {
      * @return the first value for that header or an empty string
      */
     public String getFirstHeader(String name) {
-        List<String> values = headers.get(name);
+        List<String> values = headers.get(name.toLowerCase(Locale.US));
         if (values != null && !values.isEmpty()) {
             return values.get(0);
         }
@@ -113,15 +119,9 @@ public class Response {
     }
 
     /**
-     * @return the HttpURLConnection behind the RestClient instance, that created this Response
-     */
-    public HttpURLConnection getUrlConnection() {
-        return httpUrlConnection;
-    }
-
-    /**
      * @return The exception caught during the creation of the urlConnection used, or during connection, or during the parsing of the response.
      */
+    @Nullable
     public Exception getCaughtException() {
         return caughtException;
     }
@@ -129,33 +129,25 @@ public class Response {
     /**
      * The constructor to use when the connection was successful.
      *
-     * @param httpUrlConnection the underlying httpUrlConnection used.
-     * @param url the url we were connecting to.
-     * @param charset the charset used, the default being {@link Request.charset}.
-     * @param logLevel the logLevel used by this restClient instance, the default being {@link LogLevel.NORMAL}
+     * @param okHttpResponse actual response from OkHttp3.
+     * @param url            the url we were connecting to.
+     * @param charset        the charset used, the default being {@link Request.charset}.
      */
-    public Response(HttpURLConnection httpUrlConnection, String url, String charset) {
-        this.httpUrlConnection = httpUrlConnection;
+    public Response(@NonNull okhttp3.Response okHttpResponse, @NonNull String url, @NonNull Charset charset) {
         this.url = url;
         this.charset = charset;
 
         //Code & Body
-        InputStream inputStream = null;
         try {
-            code = httpUrlConnection.getResponseCode();
-            inputStream = code < 400? httpUrlConnection.getInputStream() : httpUrlConnection.getErrorStream();
-            response = Utils.toByteArray(inputStream);
+            code = okHttpResponse.code();
+            response = okHttpResponse.body().bytes();
 
         } catch (Exception e) {
             this.caughtException = e;
-        } finally {
-            Utils.closeQuietly(inputStream);
         }
 
         //Headers
-        if (httpUrlConnection != null && httpUrlConnection.getHeaderFields() != null) {
-            headers.putAll(httpUrlConnection.getHeaderFields());
-        }
+        headers.putAll(okHttpResponse.headers().toMultimap());
 
         //Logging
         Utils.log(Log.DEBUG, "Response " + code + " for: " + getUrl() + "\n" + getText());
@@ -164,10 +156,10 @@ public class Response {
     /**
      * The constructor to use when connection has failed.
      *
-     * @param url the url we wanted to connect to.
+     * @param url    the url we wanted to connect to.
      * @param reason the reason why we couldn't connect.
      */
-    public Response(String url, Exception reason) {
+    public Response(@NonNull String url, @Nullable Exception reason) {
         this.url = url;
         this.caughtException = reason;
     }
@@ -177,7 +169,7 @@ public class Response {
      *
      * @param parser
      * @return The domain parsed variant of this Response's body
-     * @throws Exceptions, thrown by the parser.
+     * @throws Exception, thrown by the parser.
      */
     public <T, E extends Exception> T getParsedText(ThrowingParser<Response, T, E> parser) throws E {
         return parser.parse(this);
@@ -191,7 +183,7 @@ public class Response {
          * @param <O> The output type
          * @throws <E> The error type
          */
-        O parse(I input) throws E;
+        O parse(@Nullable I input) throws E;
     }
 
 }

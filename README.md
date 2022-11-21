@@ -1,20 +1,19 @@
-# Accedo One SDK for Android
+# Accedo Control SDK for Android
 
 ```
-   _                    _           ___
-  /_\   ___ ___ ___  __| | ___     /___\_ __   ___
- //_\\ / __/ __/ _ \/ _` |/ _ \   //  // '_ \ / _ \
-/  _  \ (_| (_|  __/ (_| | (_) | / \_//| | | |  __/
-\_/ \_/\___\___\___|\__,_|\___/  \___/ |_| |_|\___|
-
+   _                    _           ___            _             _ 
+  /_\   ___ ___ ___  __| | ___     / __\___  _ __ | |_ _ __ ___ | |
+ //_\\ / __/ __/ _ \/ _` |/ _ \   / /  / _ \| '_ \| __| '__/ _ \| |
+/  _  \ (_| (_|  __/ (_| | (_) | / /__| (_) | | | | |_| | | (_) | |
+\_/ \_/\___\___\___|\__,_|\___/  \____/\___/|_| |_|\__|_|  \___/|_|                                                          
 ```
 
 [ ![Download](https://api.bintray.com/packages/tibor-pasztor-accedo/accedo-products/accedo-one-sdk-android/images/download.svg) ](https://bintray.com/tibor-pasztor-accedo/accedo-products/accedo-one-sdk-android/_latestVersion)
 
 ## Summary
 
-This is the official [Accedo One](https://www.accedo.tv/one) SDK for Android 4.0 and up, previously known as the VDK AppGrid component.
-While Accedo One exposes a set of friendly REST APIs, this SDK is intended to provide a smoother experience when coding in Android, providing seamless sync/async services, with automatic caching, and offline mode.
+This is the official [Accedo Control](https://www.accedo.tv/one) SDK for Android 4.0 and up, previously known as the VDK AppGrid component.
+While Accedo Control exposes a set of friendly REST APIs, this SDK is intended to provide a smoother experience when coding in Android, providing seamless sync/async services, with automatic caching, and offline mode.
 
 We follow [semantic versioning](http://semver.org/).
 Check the [change log](./CHANGELOG.md) for a listing of changes and new features per version.
@@ -82,33 +81,12 @@ dependencies {
 ```
 
 </p>
-</details> 
-
-
-<details>
-<summary>Setup using Bintray (Which will be deprecated soon!)</summary>
-<p>
-
-```groovy
-// In root build.gradle
-maven {
-    // JFrog Bintray url
-    url  "https://dl.bintray.com/tibor-pasztor-accedo/accedo-products"
-}
-
-// In project module
-dependencies {
-    implementation 'tv.accedo.one:control-sdk:<latest>'
-}
-```
-
-</p>
 </details>
 
 - Create a singleton instance of AccedoOne in your service holder or application such as:
 
-```java
-static final AccedoOne accedoOne = new AccedoOneImpl("appKey", getDeviceId());
+```kotlin
+val accedoControl :AccedoOne = AccedoOneImpl("appKey", getDeviceId())
 ```
 
 - Use this instance to access AccedoOne anywhere!
@@ -123,11 +101,11 @@ The SDK provides you with both sync and async calls for almost every API it expo
 
 Sync example:
 
-```java
-try {
-    String result = accedoOne.control().getMetadata(context, "base_url");
-} catch (AccedoOneException e) {
-    e.printStackTrace();
+```kotlin
+val result: String = withContext(Dispatchers.IO) {
+  kotlin.runCatching {
+    accedoOne.control().getMetadata(context, "base_url")
+  }
 }
 ```
 
@@ -151,11 +129,11 @@ Please note the cancellable returned by async calls. Those can be useful if you'
 
 ### Publish example
 
-```java
-try {
-    JSONObject result = accedoOne.publish().getEntry(context, "hashId");
-} catch (AccedoOneException e) {
-    e.printStackTrace();
+```kotlin
+val result: JSONObject = withContext(Dispatchers.IO) {
+  kotlin.runCatching {
+    accedoOne.publish().getEntry(context, "hashId")
+  }
 }
 ```
 

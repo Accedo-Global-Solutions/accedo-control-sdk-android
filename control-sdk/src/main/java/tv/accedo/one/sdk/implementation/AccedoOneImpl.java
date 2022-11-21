@@ -7,12 +7,16 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import tv.accedo.one.sdk.definition.AccedoOneCache;
 import tv.accedo.one.sdk.definition.AccedoOneControl;
 import tv.accedo.one.sdk.definition.AccedoOneInsight;
@@ -22,10 +26,11 @@ import tv.accedo.one.sdk.definition.AccedoOne;
 import tv.accedo.one.sdk.definition.AccedoOneUserData;
 import tv.accedo.one.sdk.definition.async.AsyncAccedoOneControl;
 import tv.accedo.one.sdk.implementation.async.AsyncAccedoOneControlImpl;
+import tv.accedo.one.sdk.implementation.utils.DnsSelector;
+import tv.accedo.one.sdk.implementation.utils.NetworkConfiguration;
 import tv.accedo.one.sdk.implementation.utils.Utils;
 import tv.accedo.one.sdk.implementation.utils.Response;
 import tv.accedo.one.sdk.implementation.utils.Request;
-import tv.accedo.one.sdk.implementation.utils.Request.OnResponseListener;
 import tv.accedo.one.sdk.model.AccedoOneException;
 import tv.accedo.one.sdk.model.AccedoOneException.StatusCode;
 import tv.accedo.one.sdk.model.ApplicationStatus;
@@ -50,6 +55,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     private String appKey;
     private String deviceId;
     private String gid;
+    protected OkHttpClient okHttpClient;
 
     //Storage
     private ConditionVariable cvSession = new ConditionVariable(true);
@@ -115,11 +121,13 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         return this;
     }
 
+    @NonNull
     @Override
     public String getEndpoint() {
         return endpoint;
     }
 
+    @NonNull
     @Override
     public String getDeviceId() {
         return deviceId;
@@ -130,6 +138,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         return gid;
     }
 
+    @NonNull
     @Override
     public String getAppKey() {
         return appKey;
@@ -143,28 +152,57 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     /**
      * This constructor uses the default endpoint of {@link Constants.DEFAULT_ENDPOINT}
      *
-     * @param appKey the hash of your Application inside Accedo One to connect to.
+     * @param appKey   the hash of your Application inside Accedo One to connect to.
      * @param deviceId a unique identifier of your device. (Eg AndroidID)
      */
-    public AccedoOneImpl(String appKey, String deviceId) {
+    public AccedoOneImpl(@NonNull String appKey, @NonNull String deviceId) {
         this.appKey = appKey;
         this.deviceId = deviceId;
+        initNetworkClient(new NetworkConfiguration.Builder().build());
+    }
+
+    public AccedoOneImpl(@NonNull String appKey, @NonNull String deviceId, @NonNull NetworkConfiguration networkConfiguration) {
+        this.appKey = appKey;
+        this.deviceId = deviceId;
+        initNetworkClient(networkConfiguration);
     }
 
     /**
      * @param endpoint The endpoint to connect to. The default is {@link Constants.DEFAULT_ENDPOINT}.
-     * @param appKey the hash of your Application inside Accedo One to connect to.
+     * @param appKey   the hash of your Application inside Accedo One to connect to.
      * @param deviceId a unique identifier of your device. (Eg AndroidID)
      */
-    public AccedoOneImpl(String endpoint, String appKey, String deviceId) {
+    public AccedoOneImpl(@NonNull String endpoint, @NonNull String appKey, @NonNull String deviceId) {
         this.endpoint = endpoint;
         this.appKey = appKey;
         this.deviceId = deviceId;
+        initNetworkClient(new NetworkConfiguration.Builder().build());
     }
 
+    public AccedoOneImpl(@NonNull String endpoint, @NonNull String appKey, @NonNull String deviceId, @NonNull NetworkConfiguration networkConfiguration) {
+        this.endpoint = endpoint;
+        this.appKey = appKey;
+        this.deviceId = deviceId;
+        initNetworkClient(networkConfiguration);
+    }
+
+    private void initNetworkClient(@NonNull NetworkConfiguration networkConfiguration) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(networkConfiguration.getConnectionTimeout(), TimeUnit.MILLISECONDS)
+                .readTimeout(networkConfiguration.getReadTimeout(), TimeUnit.MILLISECONDS);
+
+        if (networkConfiguration.isForceIpv4()) {
+            builder.dns(new DnsSelector());
+        }
+
+        okHttpClient = builder.build();
+    }
+
+
     //-------- metadata --------
+    @NonNull
     @Override
-    public String getMetadata(Context context, String key) throws AccedoOneException {
+    public String getMetadata(@NonNull Context context, @NonNull String key) throws AccedoOneException {
         Map<String, String> allMetadata = getAllMetadata(context);
         if (allMetadata.containsKey(key)) {
             return allMetadata.get(key);
@@ -173,21 +211,24 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         }
     }
 
+    @NonNull
     @Override
-    public Map<String, String> getAllMetadata(Context context) throws AccedoOneException {
+    public Map<String, String> getAllMetadata(@NonNull Context context) throws AccedoOneException {
         String url = endpoint + PATH_METADATA;
         return new IfModifiedTask(this, context, url).run(new JSONMapByteParser());
     }
 
+    @NonNull
     @Override
-    public JSONObject getAllMetadataRaw(Context context) throws AccedoOneException {
+    public JSONObject getAllMetadataRaw(@NonNull Context context) throws AccedoOneException {
         String url = endpoint + PATH_METADATA;
         return new IfModifiedTask(this, context, url).run(new JSONObjectByteParser());
     }
 
     //-------- asset --------
+    @NonNull
     @Override
-    public byte[] getAsset(Context context, String key) throws AccedoOneException {
+    public byte[] getAsset(@NonNull Context context, @NonNull String key) throws AccedoOneException {
         String url = getAllAssets(context).get(key);
         if (url == null) {
             throw new AccedoOneException(StatusCode.KEY_NOT_FOUND);
@@ -196,14 +237,16 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         return new IfModifiedTask(this, context, url).run(new ByteArrayParser());
     }
 
+    @NonNull
     @Override
-    public Map<String, String> getAllAssets(Context context) throws AccedoOneException {
+    public Map<String, String> getAllAssets(@NonNull Context context) throws AccedoOneException {
         String url = endpoint + PATH_ASSETS;
         return new IfModifiedTask(this, context, url).run(new JSONMapByteParser());
     }
 
+    @NonNull
     @Override
-    public Map<String, byte[]> getAllAssetsRaw(Context context) throws AccedoOneException {
+    public Map<String, byte[]> getAllAssetsRaw(@NonNull Context context) throws AccedoOneException {
         HashMap<String, byte[]> result = new HashMap<>();
 
         Map<String, String> assets = getAllAssets(context);
@@ -214,18 +257,20 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         return result;
     }
 
+    @NonNull
     @Override
-    public Profile getProfile(Context context) throws AccedoOneException {
+    public Profile getProfile(@NonNull Context context) throws AccedoOneException {
         return createSessionedRestClient(endpoint + PATH_PROFILE)
-                .connect(new AccedoOneResponseChecker())
+                .connect(okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new ProfileParser());
     }
 
+    @NonNull
     @Override
-    public ApplicationStatus getApplicationStatus(Context context) {
+    public ApplicationStatus getApplicationStatus(@NonNull Context context) {
         try {
             return createSessionedRestClient(endpoint + PATH_STATUS)
-                    .connect(new AccedoOneResponseChecker())
+                    .connect(okHttpClient, new AccedoOneResponseChecker())
                     .getParsedText(new ApplicationStatusParser());
         } catch (AccedoOneException e) {
             Utils.log(e);
@@ -246,7 +291,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
             Response response = createRestClient(endpoint + PATH_SESSION)
                     .addHeader(HEADER_APPKEY, appKey)
                     .addHeader(HEADER_USERID, deviceId)
-                    .connect(new AccedoOneResponseChecker());
+                    .connect(okHttpClient, new AccedoOneResponseChecker());
 
             serverTimeDifference = response.getServerTime() - SystemClock.elapsedRealtime();
             session = response.getParsedText(new SessionParser());
@@ -260,36 +305,43 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         return session.first;
     }
 
+    @NonNull
     @Override
     public AsyncAccedoOneControl async() {
         return new AsyncAccedoOneControlImpl(this);
     }
 
+    @NonNull
     @Override
     public AccedoOneControl control() {
         return this;
     }
 
+    @NonNull
     @Override
     public AccedoOneDetect detect() {
         return accedoOneDetectImpl;
     }
 
+    @NonNull
     @Override
     public AccedoOneInsight insight() {
         return new AccedoOneInsightImpl(this);
     }
 
+    @NonNull
     @Override
     public AccedoOneUserData userData() {
         return new AccedoOneUserDataImpl(this);
     }
 
+    @NonNull
     @Override
     public AccedoOnePublish publish() {
         return new AccedoOnePublishImpl(this);
     }
 
+    @NonNull
     @Override
     public AccedoOneCache cache() {
         return new AccedoOneCacheImpl(this);

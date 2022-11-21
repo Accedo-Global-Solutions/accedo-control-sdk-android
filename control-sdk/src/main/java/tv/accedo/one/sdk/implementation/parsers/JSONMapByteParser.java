@@ -2,6 +2,7 @@ package tv.accedo.one.sdk.implementation.parsers;
 
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class JSONMapByteParser implements ThrowingParser<byte[], Map<String, Str
     public Map<String, String> parse(byte[] rawResponse) throws AccedoOneException {
         try {
             HashMap<String, String> result = new HashMap<String, String>();
-            JSONObject jsonObject = new JSONObject(new String(rawResponse, "UTF-8"));
+            JSONObject jsonObject = new JSONObject(new String(rawResponse, StandardCharsets.UTF_8));
             for(Iterator<String> iterator = jsonObject.keys(); iterator.hasNext();){
                 String key = iterator.next();
                 result.put(key, jsonObject.getString(key));

@@ -6,6 +6,8 @@ import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -27,7 +29,8 @@ import tv.accedo.one.sdk.model.LogLevel;
  */
 public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
     //Services
-    private AccedoOneImpl accedoOneImpl;
+    @NonNull
+    private final AccedoOneImpl accedoOneImpl;
 
     //Config
     private long loggingPeriod = DEFAULT_LOGGING_PERIOD;
@@ -35,11 +38,11 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
 
     //Storage
     private Pair<LogLevel, Long> storedActiveLogLevel;
-    private List<LogEntry> logEntries = Collections.synchronizedList(new ArrayList<LogEntry>());
+    private final List<LogEntry> logEntries = Collections.synchronizedList(new ArrayList<LogEntry>());
 
     //Threading
     private static final int MESSAGE_PURGE = 1;
-    private Handler handler = new Handler(Looper.getMainLooper()) {
+    private final Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             purgeLogs();
@@ -56,16 +59,16 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
         return this;
     }
 
-    public AccedoOneDetectImpl(AccedoOneImpl accedoOneImpl) {
+    public AccedoOneDetectImpl(@NonNull AccedoOneImpl accedoOneImpl) {
         this.accedoOneImpl = accedoOneImpl;
     }
 
     @Override
-    public void log(LogLevel logLevel, int code, String message, String... dimensions) {
+    public void log(@NonNull LogLevel logLevel, int code, @NonNull String message, String... dimensions) {
         LogEntry logEntry = new LogEntry(logLevel, accedoOneImpl.getServerTime(), code, message, dimensions);
 
         //Check logEntry
-        if (logLevel == null || code < 0 || code > 99999 || message == null || (dimensions != null && dimensions.length > 4)) {
+        if (code < 0 || code > 99999 || dimensions != null && dimensions.length > 4) {
             Utils.log(Log.WARN, "Invalid logEntry, skipping: " + logEntry.toString());
             return;
         }
@@ -110,10 +113,9 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
                 //Send
                 Utils.log(Log.DEBUG, String.format("Sending out batch logs, with logLevel equals or higher \"%s\"", activeLogLevel.name()));
                 accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + PATH_LOGS)
-                        .setMethod(Method.POST)
+                        .setMethod(Method.POST, payload.toString())
                         .addHeader("Content-Type", "application/json")
-                        .setPayload(payload.toString())
-                        .connect(new AccedoOneResponseChecker());
+                        .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker());
 
                 return null;
             }
@@ -125,7 +127,7 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
 
             @Override
             public void onFailure(Exception caughtException) {
-               Utils.log(caughtException);
+                Utils.log(caughtException);
                 handler.sendMessageDelayed(Message.obtain(handler, MESSAGE_PURGE), loggingPeriod);
             }
         }.executeAndReturn();
@@ -143,10 +145,9 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
                 }
 
                 accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + PATH_LOG_APPEVENT)
-                        .setMethod(Method.POST)
+                        .setMethod(Method.POST, payload)
                         .addHeader("Content-Type", "application/json")
-                        .setPayload(payload)
-                        .connect(new AccedoOneResponseChecker());
+                        .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker());
 
                 return null;
             }
@@ -166,7 +167,7 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
 
         //Otherwise fetch and store
         storedActiveLogLevel = accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + PATH_LOG_LEVEL)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new LogLevelParser(loglevelInvalidation));
 
         //And return

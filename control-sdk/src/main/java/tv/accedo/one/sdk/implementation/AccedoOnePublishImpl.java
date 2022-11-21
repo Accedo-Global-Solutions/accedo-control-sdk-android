@@ -5,11 +5,14 @@ import android.net.Uri;
 import android.net.Uri.Builder;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import tv.accedo.one.sdk.definition.AccedoOnePublishByAlias;
@@ -36,32 +39,34 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
 
     public AccedoOnePublishImpl(AccedoOneImpl accedoOneImpl) {
         this.accedoOneImpl = accedoOneImpl;
-        this.sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        this.sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
         this.sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
+    @NonNull
     @Override
-    public JSONObject getEntry(Context context, String id) throws AccedoOneException {
+    public JSONObject getEntry(@NonNull Context context, @NonNull String id) throws AccedoOneException {
         return getEntry(context, id, null);
     }
 
+    @NonNull
     @Override
-    public JSONObject getEntry(Context context, String id, OptionalParams optionalParams) throws AccedoOneException {
-        if(id==null){
+    public JSONObject getEntry(@NonNull Context context, @NonNull String id, OptionalParams optionalParams) throws AccedoOneException {
+        if (id.isEmpty()) {
             throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"id\" can not be null.");
         }
 
         String url = createUri(accedoOneImpl.getEndpoint() + PATH_ENTRY + id, new PaginatedParams(optionalParams)).toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new JSONObjectParser());
     }
 
 
-
+    @NonNull
     @Override
-    public JSONArray getEntries(final Context context, final String typeId) throws AccedoOneException {
+    public JSONArray getEntries(@NonNull final Context context, @NonNull final String typeId) throws AccedoOneException {
         return new PaginatedFetchAllTask() {
             @Override
             public PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException {
@@ -70,8 +75,9 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
         }.fetchAll();
     }
 
+    @NonNull
     @Override
-    public JSONArray getEntries(final Context context, final String typeId, OptionalParams optionalParams) throws AccedoOneException {
+    public JSONArray getEntries(@NonNull final Context context, @NonNull final String typeId, OptionalParams optionalParams) throws AccedoOneException {
         return new PaginatedFetchAllTask(optionalParams) {
             @Override
             public PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException {
@@ -80,10 +86,11 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
         }.fetchAll();
     }
 
+    @NonNull
     @Override
-    public PagedResponse getEntries(Context context, String typeId, PaginatedParams paginatedParams) throws AccedoOneException {
-        if(typeId==null){
-            throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"typeId\" can not be null.");
+    public PagedResponse getEntries(@NonNull Context context, @NonNull String typeId, PaginatedParams paginatedParams) throws AccedoOneException {
+        if (typeId.isEmpty()) {
+            throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"typeId\" can not be empty.");
         }
 
         String url = createUri(accedoOneImpl.getEndpoint() + PATH_ENTRIES, paginatedParams)
@@ -93,14 +100,14 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
                 .toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PagedResponseParser());
     }
 
 
-
+    @NonNull
     @Override
-    public JSONArray getEntries(final Context context, final List<String> ids) throws AccedoOneException {
+    public JSONArray getEntries(@NonNull final Context context, @NonNull final List<String> ids) throws AccedoOneException {
         return new PaginatedFetchAllTask() {
             @Override
             public PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException {
@@ -109,8 +116,9 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
         }.fetchAll();
     }
 
+    @NonNull
     @Override
-    public JSONArray getEntries(final Context context, final List<String> ids, OptionalParams optionalParams) throws AccedoOneException {
+    public JSONArray getEntries(@NonNull final Context context, @NonNull final List<String> ids, OptionalParams optionalParams) throws AccedoOneException {
         return new PaginatedFetchAllTask(optionalParams) {
             @Override
             public PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException {
@@ -119,9 +127,10 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
         }.fetchAll();
     }
 
+    @NonNull
     @Override
-    public PagedResponse getEntries(Context context, List<String> ids, PaginatedParams paginatedParams) throws AccedoOneException {
-        if(ids==null || ids.isEmpty()){
+    public PagedResponse getEntries(@NonNull Context context, @NonNull List<String> ids, PaginatedParams paginatedParams) throws AccedoOneException {
+        if (ids.isEmpty()) {
             throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"ids\" can not be null or empty.");
         }
 
@@ -132,14 +141,14 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
                 .toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PagedResponseParser());
     }
 
 
-
+    @NonNull
     @Override
-    public JSONArray getAllEntries(final Context context) throws AccedoOneException {
+    public JSONArray getAllEntries(@NonNull final Context context) throws AccedoOneException {
         return new PaginatedFetchAllTask() {
             @Override
             public PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException {
@@ -148,8 +157,9 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
         }.fetchAll();
     }
 
+    @NonNull
     @Override
-    public JSONArray getAllEntries(final Context context, OptionalParams optionalParams) throws AccedoOneException {
+    public JSONArray getAllEntries(@NonNull final Context context, OptionalParams optionalParams) throws AccedoOneException {
         return new PaginatedFetchAllTask(optionalParams) {
             @Override
             public PagedResponse fetchPage(PaginatedParams paginatedParams) throws AccedoOneException {
@@ -158,37 +168,38 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
         }.fetchAll();
     }
 
+    @NonNull
     @Override
-    public PagedResponse getAllEntries(Context context, PaginatedParams paginatedParams) throws AccedoOneException {
+    public PagedResponse getAllEntries(@NonNull Context context, PaginatedParams paginatedParams) throws AccedoOneException {
         String url = createUri(accedoOneImpl.getEndpoint() + PATH_ENTRIES, paginatedParams).toString();
 
         return accedoOneImpl.createSessionedRestClient(url)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PagedResponseParser());
     }
 
 
-
+    @NonNull
     @Override
-    public List<PublishLocale> getAvailableLocales(Context context) throws AccedoOneException {
+    public List<PublishLocale> getAvailableLocales(@NonNull Context context) throws AccedoOneException {
         return accedoOneImpl.createSessionedRestClient(accedoOneImpl.getEndpoint() + PATH_LOCALES)
-                .connect(new AccedoOneResponseChecker())
+                .connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker())
                 .getParsedText(new PublishLocalesParser());
     }
 
     Uri createUri(String url, PaginatedParams paginatedParams) throws AccedoOneException {
         Uri uri = Uri.parse(url);
 
-        if(paginatedParams!=null){
+        if (paginatedParams != null) {
             //Check
-            if(paginatedParams.isPreview() && paginatedParams.getAt()!=null){
+            if (paginatedParams.isPreview() && paginatedParams.getAt() != null) {
                 throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"at\" parameter can not be used if \"preview\" is set to \"true\".");
             }
-            if(paginatedParams.getOffset()<0){
-                throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"offset\" parameter ("+paginatedParams.getOffset()+") can not be negative.");
+            if (paginatedParams.getOffset() < 0) {
+                throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"offset\" parameter (" + paginatedParams.getOffset() + ") can not be negative.");
             }
-            if(paginatedParams.getSize()<1 || paginatedParams.getSize()>50){
-                throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"size\" parameter ("+paginatedParams.getSize()+") must be between 1 and 50, default is 20.");
+            if (paginatedParams.getSize() < 1 || paginatedParams.getSize() > 50) {
+                throw new AccedoOneException(StatusCode.INVALID_PARAMETERS, "\"size\" parameter (" + paginatedParams.getSize() + ") must be between 1 and 50, default is 20.");
             }
 
             //Append
@@ -209,11 +220,13 @@ public class AccedoOnePublishImpl extends Constants implements AccedoOnePublish 
     }
 
 
+    @NonNull
     @Override
     public AsyncAccedoOnePublish async() {
         return new AsyncAccedoOnePublishImpl(this);
     }
 
+    @NonNull
     @Override
     public AccedoOnePublishByAlias byAlias() {
         return new AccedoOnePublishByAliasImpl(accedoOneImpl, this);

@@ -14,7 +14,7 @@ import tv.accedo.one.sdk.implementation.utils.Response;
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class LogLevelParser implements ThrowingParser<Response, Pair<LogLevel, Long>, AccedoOneException> {
-    private long logLevelInvalidation;
+    private final long logLevelInvalidation;
 
     public LogLevelParser(long logLevelInvalidation) {
         this.logLevelInvalidation = logLevelInvalidation;

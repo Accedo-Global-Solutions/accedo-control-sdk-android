@@ -25,7 +25,7 @@ class Constants {
     static final String EVENT_START = "START";
     static final String EVENT_QUIT = "QUIT";
 
-    public static final long   DEFAULT_LOGLEVEL_INVALIDATION_PERIOD = 15 * 60 * 1000;
-    public static final long   DEFAULT_LOGGING_PERIOD = 3 * 60 * 1000;
+    public static final long DEFAULT_LOGLEVEL_INVALIDATION_PERIOD = 15 * 60 * 1000;
+    public static final long DEFAULT_LOGGING_PERIOD = 3 * 60 * 1000;
     public static final String DEFAULT_ENDPOINT = "https://api.one.accedo.tv";
 }

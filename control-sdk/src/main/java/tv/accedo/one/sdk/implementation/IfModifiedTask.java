@@ -1,7 +1,11 @@
 package tv.accedo.one.sdk.implementation;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.net.URI;
@@ -9,9 +13,9 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
-import tv.accedo.one.sdk.BuildConfig;
 import tv.accedo.one.sdk.implementation.utils.InternalStorage;
 import tv.accedo.one.sdk.implementation.utils.Request;
 import tv.accedo.one.sdk.implementation.utils.Response;
@@ -28,21 +32,24 @@ class IfModifiedTask {
     private static final int LAST_CACHEBREAKING_VERSION_UPDATE = 100; //1.0(.0)
 
     static final SimpleDateFormat sdfIfModifiedSince = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+
     static {
         sdfIfModifiedSince.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
-    private AccedoOneImpl accedoOneImpl;
-    private Context context;
-    private String url;
-    
-    public IfModifiedTask(AccedoOneImpl accedoOneImpl, Context context, String url){
+    @NonNull
+    private final AccedoOneImpl accedoOneImpl;
+    @NonNull
+    private final Context context;
+    @NonNull
+    private final String url;
+
+    public IfModifiedTask(@NonNull AccedoOneImpl accedoOneImpl, @NonNull Context context, @NonNull String url) {
         this.accedoOneImpl = accedoOneImpl;
         this.context = context;
         this.url = url;
     }
-    
-    @SuppressWarnings("unchecked")
+
     public <O> O run(ThrowingParser<byte[], O, AccedoOneException> parser) throws AccedoOneException {
         cleanup(context, false);
 
@@ -54,68 +61,67 @@ class IfModifiedTask {
         //Try to fetch a response.. Remember, even createSessionedRestClient() might fail if we are offline
         Throwable caughtException = null;
         Response response = null;
-        try{
+        try {
             //If-Modified-Since
-            if(InternalStorage.exists(context, timestampKey)){
+            if (InternalStorage.exists(context, timestampKey)) {
                 Long lastFetchedAt = (Long) InternalStorage.read(context, timestampKey);
-                if(lastFetchedAt!=null){
+                if (lastFetchedAt != null) {
                     request.addHeader("If-Modified-Since", sdfIfModifiedSince.format(new Date(lastFetchedAt)));
                 }
             }
-            
+
             //Connect
-            response = request.addHeader(Constants.HEADER_SESSION, accedoOneImpl.getSession()).connect(new AccedoOneResponseChecker());
-            
-        }catch(AccedoOneException e){
+            response = request.addHeader(Constants.HEADER_SESSION, accedoOneImpl.getSession()).connect(accedoOneImpl.okHttpClient, new AccedoOneResponseChecker());
+
+        } catch (AccedoOneException e) {
             Utils.log(e);
-            Utils.log(Log.INFO, "Something went wrong. Going into offline mode for: "+ request.getUrl());
+            Utils.log(Log.INFO, "Something went wrong. Going into offline mode for: " + request.getUrl());
             caughtException = e.getCause();
         }
-        
+
         //Process response
-        if (response != null && response.isSuccess()) {
+        if (response != null && response.isSuccess() && response.getRawResponse() != null) {
             //Store if we've successfuly fetched something
             O result = parser.parse(response.getRawResponse());
-            if (InternalStorage.write(context, response.getRawResponse(), key)) {
-                // Save timestamp only if write was successful. (eg. there's not enough space)
-                InternalStorage.write(context, response.getServerTime(), timestampKey);
-            }
-            Utils.log(Log.INFO, "Storing in offline cache: "+ request.getUrl());
+            InternalStorage.write(context, response.getRawResponse(), key);
+            InternalStorage.write(context, response.getServerTime(), timestampKey);
+            Utils.log(Log.INFO, "Storing in offline cache: " + request.getUrl());
             return result;
-        
+
         } else {
             //Try from offline cache
-            Object result = null;
-            if(InternalStorage.exists(context, key)){
+            O result = null;
+            if (InternalStorage.exists(context, key)) {
                 result = parser.parse((byte[]) InternalStorage.read(context, key));
             }
-            if(result!=null){
+            if (result != null) {
                 //We got something, lets try to cast and return it
-                try{
-                    O o = (O) result;
-                    Utils.log(Log.INFO, "Serving from offline cache: "+ request.getUrl());
-                    return o;
-                }catch(ClassCastException e){
-                    Utils.log(Log.WARN, "Failed to serve from offline cache: "+ request.getUrl());
+                try {
+                    Utils.log(Log.INFO, "Serving from offline cache: " + request.getUrl());
+                    return result;
+                } catch (ClassCastException e) {
+                    Utils.log(Log.WARN, "Failed to serve from offline cache: " + request.getUrl());
                     InternalStorage.delete(context, key);
                     InternalStorage.delete(context, timestampKey);
                     throw new AccedoOneException(StatusCode.CACHE_ERROR, e);
-                }    
-            }else{
+                }
+            } else {
                 //Sorry, no luck
-                Utils.log(Log.WARN, "Failed to serve from offline cache: "+ request.getUrl());
+                Utils.log(Log.WARN, "Failed to serve from offline cache: " + request.getUrl());
                 throw new AccedoOneException(StatusCode.CACHE_MISS, caughtException);
             }
         }
     }
-    
-    public static String getCacheKey(String url, String appKey, String gid){
-        return "ONE"+ Utils.md5Hash(removeSession(url) + appKey + gid);
+
+    public static String getCacheKey(String url, String appKey, String gid) {
+        return "ONE" + Utils.md5Hash(removeSession(url) + appKey + gid);
     }
-    public static String getTimestampCacheKey(String url, String appKey, String gid){
-        return "ONE"+ Utils.md5Hash(removeSession(url) + appKey + gid)+".t";
+
+    public static String getTimestampCacheKey(String url, String appKey, String gid) {
+        return "ONE" + Utils.md5Hash(removeSession(url) + appKey + gid) + ".t";
     }
-    private static String removeSession(String url){
+
+    private static String removeSession(String url) {
         if (url.contains("sessionKey")) {
             try {
                 URI uri = new URI(url);
@@ -132,17 +138,22 @@ class IfModifiedTask {
         return url;
     }
 
-    static void cleanup(Context context, boolean force) {
-        Integer versionCode = (Integer) InternalStorage.read(context, FILENAME_VERSIONCODE);
+    static void cleanup(@NonNull Context context, boolean force) {
+        try {
+            Integer versionCode = (Integer) InternalStorage.read(context, FILENAME_VERSIONCODE);
 
-        if (force || versionCode == null || versionCode.intValue() < LAST_CACHEBREAKING_VERSION_UPDATE) {
-            for (File file : context.getFilesDir().listFiles()) {
-                if (file.getName().startsWith("ONE")) {
-                    file.delete();
+            if (force || versionCode == null || versionCode < LAST_CACHEBREAKING_VERSION_UPDATE) {
+                for (File file : Objects.requireNonNull(context.getFilesDir().listFiles())) {
+                    if (file.getName().startsWith("ONE")) {
+                        file.delete();
+                    }
                 }
             }
-        }
 
-        InternalStorage.write(context, new Integer(BuildConfig.VERSION_CODE), FILENAME_VERSIONCODE);
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            InternalStorage.write(context, pInfo.versionCode, FILENAME_VERSIONCODE);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

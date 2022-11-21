@@ -2,6 +2,8 @@ package tv.accedo.one.sdk.implementation.async;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,14 +23,15 @@ import tv.accedo.one.sdk.definition.async.Callback;
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class AsyncAccedoOnePublishByAliasImpl implements AsyncAccedoOnePublishByAlias {
-    private AccedoOnePublishByAlias accedoOnePublishByAlias;
+    @NonNull
+    private final AccedoOnePublishByAlias accedoOnePublishByAlias;
 
-    public AsyncAccedoOnePublishByAliasImpl(AccedoOnePublishByAlias accedoOnePublishByAlias) {
+    public AsyncAccedoOnePublishByAliasImpl(@NonNull AccedoOnePublishByAlias accedoOnePublishByAlias) {
         this.accedoOnePublishByAlias = accedoOnePublishByAlias;
     }
 
     @Override
-    public Cancellable getEntry(final Context context, final String alias, Callback<JSONObject> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntry(@NonNull final Context context, @NonNull final String alias, Callback<JSONObject> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONObject, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONObject call() throws Exception {
@@ -38,7 +41,7 @@ public class AsyncAccedoOnePublishByAliasImpl implements AsyncAccedoOnePublishBy
     }
 
     @Override
-    public Cancellable getEntry(final Context context, final String alias, final OptionalParams optionalParams, Callback<JSONObject> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntry(@NonNull final Context context, @NonNull final String alias, final OptionalParams optionalParams, Callback<JSONObject> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONObject, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONObject call() throws Exception {
@@ -48,7 +51,7 @@ public class AsyncAccedoOnePublishByAliasImpl implements AsyncAccedoOnePublishBy
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final String typeAlias, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final String typeAlias, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONArray, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONArray call() throws Exception {
@@ -58,7 +61,7 @@ public class AsyncAccedoOnePublishByAliasImpl implements AsyncAccedoOnePublishBy
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final String typeAlias, final OptionalParams optionalParams, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final String typeAlias, final OptionalParams optionalParams, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONArray, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONArray call() throws Exception {
@@ -68,7 +71,7 @@ public class AsyncAccedoOnePublishByAliasImpl implements AsyncAccedoOnePublishBy
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final String typeAlias, final PaginatedParams paginatedParams, Callback<PagedResponse> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final String typeAlias, final PaginatedParams paginatedParams, Callback<PagedResponse> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<PagedResponse, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public PagedResponse call() throws Exception {
@@ -78,7 +81,7 @@ public class AsyncAccedoOnePublishByAliasImpl implements AsyncAccedoOnePublishBy
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final List<String> aliases, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final List<String> aliases, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONArray, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONArray call() throws Exception {
@@ -88,7 +91,7 @@ public class AsyncAccedoOnePublishByAliasImpl implements AsyncAccedoOnePublishBy
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final List<String> aliases, final OptionalParams optionalParams, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final List<String> aliases, final OptionalParams optionalParams, Callback<JSONArray> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONArray, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONArray call() throws Exception {
@@ -98,7 +101,7 @@ public class AsyncAccedoOnePublishByAliasImpl implements AsyncAccedoOnePublishBy
     }
 
     @Override
-    public Cancellable getEntries(final Context context, final List<String> aliases, final PaginatedParams paginatedParams, Callback<PagedResponse> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getEntries(@NonNull final Context context, @NonNull final List<String> aliases, final PaginatedParams paginatedParams, Callback<PagedResponse> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<PagedResponse, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public PagedResponse call() throws Exception {

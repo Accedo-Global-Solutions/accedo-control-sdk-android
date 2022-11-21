@@ -2,6 +2,8 @@ package tv.accedo.one.sdk.implementation.async;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -20,14 +22,15 @@ import tv.accedo.one.sdk.definition.async.Callback;
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class AsyncAccedoOneControlImpl implements AsyncAccedoOneControl {
-    private AccedoOneControl accedoOneControl;
+    @NonNull
+    private final AccedoOneControl accedoOneControl;
 
-    public AsyncAccedoOneControlImpl(AccedoOneControl accedoOneControl) {
+    public AsyncAccedoOneControlImpl(@NonNull AccedoOneControl accedoOneControl) {
         this.accedoOneControl = accedoOneControl;
     }
 
     @Override
-    public Cancellable getMetadata(final Context context, final String key, Callback<String> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getMetadata(@NonNull final Context context, @NonNull final String key, Callback<String> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<String, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public String call() throws Exception {
@@ -37,7 +40,7 @@ public class AsyncAccedoOneControlImpl implements AsyncAccedoOneControl {
     }
 
     @Override
-    public Cancellable getAllMetadata(final Context context, Callback<Map<String, String>> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getAllMetadata(@NonNull final Context context, Callback<Map<String, String>> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<Map<String, String>, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public Map<String, String> call() throws Exception {
@@ -47,7 +50,7 @@ public class AsyncAccedoOneControlImpl implements AsyncAccedoOneControl {
     }
 
     @Override
-    public Cancellable getAllMetadataRaw(final Context context, Callback<JSONObject> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getAllMetadataRaw(@NonNull final Context context, Callback<JSONObject> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<JSONObject, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public JSONObject call() throws Exception {
@@ -57,7 +60,7 @@ public class AsyncAccedoOneControlImpl implements AsyncAccedoOneControl {
     }
 
     @Override
-    public Cancellable getAsset(final Context context, final String key, Callback<byte[]> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getAsset(@NonNull final Context context, @NonNull final String key, Callback<byte[]> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<byte[], AccedoOneException>(onSuccess, onFailure) {
             @Override
             public byte[] call() throws Exception {
@@ -67,7 +70,7 @@ public class AsyncAccedoOneControlImpl implements AsyncAccedoOneControl {
     }
 
     @Override
-    public Cancellable getAllAssets(final Context context, Callback<Map<String, String>> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getAllAssets(@NonNull final Context context, Callback<Map<String, String>> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<Map<String, String>, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public Map<String, String> call() throws Exception {
@@ -77,7 +80,7 @@ public class AsyncAccedoOneControlImpl implements AsyncAccedoOneControl {
     }
 
     @Override
-    public Cancellable getAllAssetsRaw(final Context context, Callback<Map<String, byte[]>> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getAllAssetsRaw(@NonNull final Context context, Callback<Map<String, byte[]>> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<Map<String, byte[]>, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public Map<String, byte[]> call() throws Exception {
@@ -87,7 +90,7 @@ public class AsyncAccedoOneControlImpl implements AsyncAccedoOneControl {
     }
 
     @Override
-    public Cancellable getProfile(final Context context, Callback<Profile> onSuccess, Callback<AccedoOneException> onFailure) {
+    public Cancellable getProfile(@NonNull final Context context, Callback<Profile> onSuccess, Callback<AccedoOneException> onFailure) {
         return new CallbackAsyncTask<Profile, AccedoOneException>(onSuccess, onFailure) {
             @Override
             public Profile call() throws Exception {
@@ -97,7 +100,7 @@ public class AsyncAccedoOneControlImpl implements AsyncAccedoOneControl {
     }
 
     @Override
-    public Cancellable getApplicationStatus(final Context context, Callback<ApplicationStatus> onSuccess) {
+    public Cancellable getApplicationStatus(@NonNull final Context context, Callback<ApplicationStatus> onSuccess) {
         return new CallbackAsyncTask<ApplicationStatus, AccedoOneException>(onSuccess, null) {
             @Override
             public ApplicationStatus call() throws Exception {

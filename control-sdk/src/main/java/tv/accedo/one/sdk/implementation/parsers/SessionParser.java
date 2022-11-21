@@ -29,10 +29,11 @@ public class SessionParser implements ThrowingParser<Response, Pair<String, Long
             Date expiration = sdfSession.parse(jsonObject.getString("expiration"));
             
             String session = jsonObject.getString("sessionKey");
+            assert expiration != null;
             long sessionExpiration = expiration.getTime();
             return new Pair<String, Long>(session, sessionExpiration);
             
-        } catch (ParseException | JSONException | NullPointerException e) {
+        } catch (Exception e) {
             throw new AccedoOneException(StatusCode.NO_SESSION, e);
         }
     }

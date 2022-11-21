@@ -1,5 +1,7 @@
 package tv.accedo.one.sdk.implementation;
 
+import androidx.annotation.NonNull;
+
 import tv.accedo.one.sdk.definition.AccedoOneInsight;
 import tv.accedo.one.sdk.definition.async.Cancellable;
 import tv.accedo.one.sdk.implementation.utils.CallbackAsyncTask;
@@ -10,9 +12,10 @@ import tv.accedo.one.sdk.implementation.utils.Request.Method;
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class AccedoOneInsightImpl extends Constants implements AccedoOneInsight {
-    private AccedoOneImpl accedoOneImpl;
+    @NonNull
+    private final AccedoOneImpl accedoOneImpl;
 
-    public AccedoOneInsightImpl(AccedoOneImpl accedoOneImpl) {
+    public AccedoOneInsightImpl(@NonNull AccedoOneImpl accedoOneImpl) {
         this.accedoOneImpl = accedoOneImpl;
     }
 
@@ -31,7 +34,7 @@ public class AccedoOneInsightImpl extends Constants implements AccedoOneInsight 
         return logAppEvent(EVENT_QUIT, retentionSeconds);
     }
 
-    private Cancellable logAppEvent(final String event, final Integer retentionSeconds) {
+    private Cancellable logAppEvent(@NonNull final String event, final Integer retentionSeconds) {
         return new CallbackAsyncTask<Void, Exception>() {
             @Override
             public Void call() throws Exception {

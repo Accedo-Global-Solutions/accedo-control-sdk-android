@@ -1,5 +1,7 @@
 package tv.accedo.one.sdk.model;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,6 +60,7 @@ public class Profile implements Serializable{
         return abTestCycleName;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "profileId: " + profileId + '\n' +
@@ -68,6 +71,7 @@ public class Profile implements Serializable{
                 "abTestCycleName: " + abTestCycleName;
     }
 
+    @NonNull
     public static Profile fromJson(JSONObject jsonObject) throws JSONException {
         Profile profile = new Profile();
         profile.profileId           = jsonObject.getString("profileId");

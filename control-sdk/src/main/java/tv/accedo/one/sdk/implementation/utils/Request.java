@@ -8,7 +8,7 @@ package tv.accedo.one.sdk.implementation.utils;
 
 import android.util.Log;
 
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.net.HttpCookie;
@@ -38,9 +38,10 @@ public class Request {
     okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder();
 
     protected Exception caughtCreationException;
+    @NonNull
     protected Charset charset = StandardCharsets.UTF_8;
     protected ArrayList<HttpCookie> cookies = new ArrayList<HttpCookie>();
-
+    @Nullable
     protected OnResponseListener onResponseListener;
 
     /**
@@ -164,10 +165,9 @@ public class Request {
     /**
      * Creates a non-cached RestClient instance.
      *
-     * @param url          the url to load
-     * @param httpCacheDir the folder to use for httpCaching. Recommended: new File(context.getCacheDir(), "http")
+     * @param url the url to load
      */
-    public Request(String url) {
+    public Request(@NonNull String url) {
         this.url = url;
 
         //Make HttpUrlConnection
@@ -182,7 +182,7 @@ public class Request {
 
     }
 
-    public <E extends Exception> Response connect(OkHttpClient okHttpClient,ResponseChecker<E> responseChecker) throws E {
+    public <E extends Exception> Response connect(@NonNull OkHttpClient okHttpClient, ResponseChecker<E> responseChecker) throws E {
         Response response = fetchResponse(okHttpClient);
 
         //Check response, and throw if necessary
@@ -198,7 +198,7 @@ public class Request {
         return response;
     }
 
-    private Response fetchResponse(OkHttpClient okHttpClient) {
+    private Response fetchResponse(@NonNull OkHttpClient okHttpClient) {
         Response response = new Response(url, caughtCreationException);
 
         okhttp3.Request req = requestBuilder.build();

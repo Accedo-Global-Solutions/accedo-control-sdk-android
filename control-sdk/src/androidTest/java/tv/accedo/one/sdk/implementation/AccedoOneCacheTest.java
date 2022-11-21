@@ -8,7 +8,6 @@ package tv.accedo.one.sdk.implementation;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.test.runner.AndroidJUnit4;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -38,6 +37,8 @@ import static tv.accedo.one.sdk.Shared.APP_ID;
 import static tv.accedo.one.sdk.Shared.DEVICE_ID;
 import static tv.accedo.one.sdk.Shared.getContext;
 import static tv.accedo.one.sdk.implementation.Constants.PATH_METADATA;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class AccedoOneCacheTest {

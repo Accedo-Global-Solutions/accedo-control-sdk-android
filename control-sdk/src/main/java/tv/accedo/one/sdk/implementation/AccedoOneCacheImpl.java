@@ -10,6 +10,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -27,14 +30,16 @@ import tv.accedo.one.sdk.implementation.parsers.JSONObjectByteParser;
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class AccedoOneCacheImpl extends Constants implements AccedoOneCache {
-    private AccedoOne accedoOne;
+    @NonNull
+    private final AccedoOne accedoOne;
 
-    public AccedoOneCacheImpl(AccedoOne accedoOne) {
+    public AccedoOneCacheImpl(@NonNull AccedoOne accedoOne) {
         this.accedoOne = accedoOne;
     }
 
+    @Nullable
     @Override
-    public String getMetadata(Context context, String key) {
+    public String getMetadata(@NonNull Context context, @NonNull String key) {
         Map<String, String> allMetadata = getAllMetadata(context);
         if (allMetadata == null) {
             return null;
@@ -43,22 +48,25 @@ public class AccedoOneCacheImpl extends Constants implements AccedoOneCache {
         return allMetadata.get(key);
     }
 
+    @Nullable
     @Override
-    public Map<String, String> getAllMetadata(Context context) {
+    public Map<String, String> getAllMetadata(@NonNull Context context) {
         String cacheKey = IfModifiedTask.getCacheKey(getUrl(PATH_METADATA), accedoOne.getAppKey(), accedoOne.getGid());
 
         return getMapFromCache(context, cacheKey);
     }
 
+    @Nullable
     @Override
-    public JSONObject getAllMetadataRaw(Context context) {
+    public JSONObject getAllMetadataRaw(@NonNull Context context) {
         String cacheKey = IfModifiedTask.getCacheKey(getUrl(PATH_METADATA), accedoOne.getAppKey(), accedoOne.getGid());
 
         return getJSONFromCache(context, cacheKey);
     }
 
+    @Nullable
     @Override
-    public byte[] getAsset(Context context, String key) {
+    public byte[] getAsset(@NonNull Context context, @NonNull String key) {
         Map<String, String> allAssets = getAllAssets(context);
         if (allAssets == null) {
             return null;
@@ -73,15 +81,17 @@ public class AccedoOneCacheImpl extends Constants implements AccedoOneCache {
         return (byte[]) InternalStorage.read(context, cacheKey);
     }
 
+    @Nullable
     @Override
-    public Map<String, String> getAllAssets(Context context) {
+    public Map<String, String> getAllAssets(@NonNull Context context) {
         String cacheKey = IfModifiedTask.getCacheKey(getUrl(PATH_ASSETS), accedoOne.getAppKey(), accedoOne.getGid());
 
         return getMapFromCache(context, cacheKey);
     }
 
+    @Nullable
     @Override
-    public Map<String, byte[]> getAllAssetsRaw(Context context) {
+    public Map<String, byte[]> getAllAssetsRaw(@NonNull Context context) {
         HashMap<String, byte[]> result = new HashMap<>();
 
         Map<String, String> assets = getAllAssets(context);
@@ -100,10 +110,11 @@ public class AccedoOneCacheImpl extends Constants implements AccedoOneCache {
     }
 
     @Override
-    public void clear(Context context) {
+    public void clear(@NonNull Context context) {
         IfModifiedTask.cleanup(context, true);
     }
 
+    @Nullable
     private Map<String, String> getMapFromCache(Context context, String cacheKey) {
         try {
             byte[] cachedValue = (byte[]) InternalStorage.read(context, cacheKey);
@@ -113,6 +124,7 @@ public class AccedoOneCacheImpl extends Constants implements AccedoOneCache {
         }
     }
 
+    @Nullable
     private JSONObject getJSONFromCache(Context context, String cacheKey) {
         try {
             byte[] cachedValue = (byte[]) InternalStorage.read(context, cacheKey);
@@ -122,6 +134,7 @@ public class AccedoOneCacheImpl extends Constants implements AccedoOneCache {
         }
     }
 
+    @NonNull
     private String getUrl(String path) {
         Uri uri = Uri.parse(accedoOne.getEndpoint() + path);
         if (!TextUtils.isEmpty(accedoOne.getGid())) {

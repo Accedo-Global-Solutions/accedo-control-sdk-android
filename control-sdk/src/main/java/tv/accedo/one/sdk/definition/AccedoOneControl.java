@@ -2,6 +2,8 @@ package tv.accedo.one.sdk.definition;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -20,13 +22,15 @@ public interface AccedoOneControl {
      *
      * @return The application status and message.
      */
-    ApplicationStatus getApplicationStatus(Context context);
+    @NonNull
+    ApplicationStatus getApplicationStatus(@NonNull Context context);
 
     /**
      * @return information about which profile your device and application is matching right now. Also contains A/B testing info.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    Profile getProfile(Context context) throws AccedoOneException;
+    @NonNull
+    Profile getProfile(@NonNull Context context) throws AccedoOneException;
 
     /**
      * Convenience method for calling getAllMetadata(context).get(key)
@@ -39,21 +43,24 @@ public interface AccedoOneControl {
      * @return The value associated with the given key.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    String getMetadata(Context context, String key) throws AccedoOneException;
+    @NonNull
+    String getMetadata(@NonNull Context context, @NonNull String key) throws AccedoOneException;
 
     /**
      * @param context
      * @return All the values stored in the Accedo One configs, by key.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    Map<String, String> getAllMetadata(Context context) throws AccedoOneException;
+    @NonNull
+    Map<String, String> getAllMetadata(@NonNull Context context) throws AccedoOneException;
 
     /**
      * @param context
      * @return All the values stored in the Accedo One configs, as raw json.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    JSONObject getAllMetadataRaw(Context context) throws AccedoOneException;
+    @NonNull
+    JSONObject getAllMetadataRaw(@NonNull Context context) throws AccedoOneException;
 
     /**
      * Fetches the resource file specified by the key.
@@ -63,7 +70,8 @@ public interface AccedoOneControl {
      * @return The resource, as a byte array
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    byte[] getAsset(Context context, String key) throws AccedoOneException;
+    @NonNull
+    byte[] getAsset(@NonNull Context context, @NonNull String key) throws AccedoOneException;
     
     /**
      * Fetches and stores all resource urls from the server.
@@ -72,7 +80,8 @@ public interface AccedoOneControl {
      * @return A map containing urls to all the resources
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    Map<String, String> getAllAssets(Context context) throws AccedoOneException;
+    @NonNull
+    Map<String, String> getAllAssets(@NonNull Context context) throws AccedoOneException;
 
     /**
      * Fetches and stores assetUrls, and the urls' contents aswell.
@@ -81,11 +90,13 @@ public interface AccedoOneControl {
      * @return The downloaded asset urls, and their content
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    Map<String, byte[]> getAllAssetsRaw(Context context) throws AccedoOneException;
+    @NonNull
+    Map<String, byte[]> getAllAssetsRaw(@NonNull Context context) throws AccedoOneException;
 
     /**
      * Used for connecting asynchronously, using callbacks.
      * @return an {@link AsyncAccedoOneControl} instance, containing this {@link AccedoOneControl} instance
      */
+    @NonNull
     AsyncAccedoOneControl async();
 }

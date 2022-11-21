@@ -2,6 +2,8 @@ package tv.accedo.one.sdk.implementation.mock;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,8 +20,9 @@ import tv.accedo.one.sdk.implementation.utils.Utils;
 public class MockOneUserData implements AccedoOneUserData {
     private static final String FILE_USERDATA = "USERDATA";
 
+    @NonNull
     @Override
-    public Map<String, String> getAllUserData(Context context, Scope scope, String userId) throws AccedoOneException {
+    public Map<String, String> getAllUserData(@NonNull Context context, @NonNull Scope scope, @NonNull String userId) throws AccedoOneException {
         Map<String, String> userData = (Map<String, String>) InternalStorage.read(context, getFileName(scope, userId));
         if(userData==null){
             userData = new HashMap<>();
@@ -28,7 +31,7 @@ public class MockOneUserData implements AccedoOneUserData {
     }
 
     @Override
-    public void setAllUserData(Context context, Scope scope, String userId, Map<String, String> userData) throws AccedoOneException {
+    public void setAllUserData(@NonNull Context context, @NonNull Scope scope, @NonNull String userId, Map<String, String> userData) throws AccedoOneException {
         if (userData == null) {
             InternalStorage.delete(context, getFileName(scope, userId));
         } else {
@@ -36,13 +39,14 @@ public class MockOneUserData implements AccedoOneUserData {
         }
     }
 
+    @NonNull
     @Override
-    public String getUserData(Context context, Scope scope, String userId, String key) throws AccedoOneException {
+    public String getUserData(@NonNull Context context, @NonNull Scope scope, @NonNull String userId, @NonNull String key) throws AccedoOneException {
         return getAllUserData(context, scope, userId).get(key);
     }
 
     @Override
-    public void setUserData(Context context, Scope scope, String userId, String key, String value) throws AccedoOneException {
+    public void setUserData(@NonNull Context context, @NonNull Scope scope, @NonNull String userId, @NonNull String key, @NonNull String value) throws AccedoOneException {
         Map<String, String> userData = getAllUserData(context, scope, userId);
         userData.put(key, value);
         setAllUserData(context, scope, userId, userData);
@@ -52,6 +56,7 @@ public class MockOneUserData implements AccedoOneUserData {
         return Utils.md5Hash(FILE_USERDATA+scope.name()+userId);
     }
 
+    @NonNull
     @Override
     public AsyncAccedoOneUser async() {
         return new AsyncAccedoOneUserImpl(this);

@@ -8,6 +8,9 @@ package tv.accedo.one.sdk.implementation.utils;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -32,9 +35,11 @@ public class Response {
 
     private int code = -1;
     private byte[] response;
-    private String url;
-    private Map<String, List<String>> headers = new HashMap<>();
     private Charset charset = StandardCharsets.UTF_8;
+    @NonNull
+    private final String url;
+    private final Map<String, List<String>> headers = new HashMap<>();
+    @Nullable
     private Exception caughtException;
 
     /**
@@ -47,6 +52,7 @@ public class Response {
     /**
      * @return the response body, string encoded with the charset of the RestClient instance, that created this Response
      */
+    @Nullable
     public String getText() {
         try {
             return new String(response, charset);
@@ -58,6 +64,7 @@ public class Response {
     /**
      * @return the raw response body
      */
+    @Nullable
     public byte[] getRawResponse() {
         return response;
     }
@@ -72,6 +79,7 @@ public class Response {
     /**
      * @return the url fetched
      */
+    @NonNull
     public String getUrl() {
         return url;
     }
@@ -79,6 +87,7 @@ public class Response {
     /**
      * @return a map of response headers, or an empty map if no connection was established (never null)
      */
+    @NonNull
     public Map<String, List<String>> getHeaders() {
         return headers;
     }
@@ -113,6 +122,7 @@ public class Response {
     /**
      * @return The exception caught during the creation of the urlConnection used, or during connection, or during the parsing of the response.
      */
+    @Nullable
     public Exception getCaughtException() {
         return caughtException;
     }
@@ -124,7 +134,7 @@ public class Response {
      * @param url            the url we were connecting to.
      * @param charset        the charset used, the default being {@link Request.charset}.
      */
-    public Response(okhttp3.Response okHttpResponse, String url, Charset charset) {
+    public Response(@NonNull okhttp3.Response okHttpResponse, @NonNull String url, @NonNull Charset charset) {
         this.url = url;
         this.charset = charset;
 
@@ -148,10 +158,10 @@ public class Response {
     /**
      * The constructor to use when connection has failed.
      *
-     * @param url the url we wanted to connect to.
+     * @param url    the url we wanted to connect to.
      * @param reason the reason why we couldn't connect.
      */
-    public Response(String url, Exception reason) {
+    public Response(@NonNull String url, Exception reason) {
         this.url = url;
         this.caughtException = reason;
     }
@@ -175,7 +185,7 @@ public class Response {
          * @param <O> The output type
          * @throws <E> The error type
          */
-        O parse(I input) throws E;
+        O parse(@Nullable I input) throws E;
     }
 
 }

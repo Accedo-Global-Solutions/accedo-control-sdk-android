@@ -3,6 +3,8 @@ package tv.accedo.one.sdk.implementation.mock;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -82,11 +84,13 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
         };
     }
 
+    @NonNull
     @Override
     public String getEndpoint() {
         return "mock";
     }
 
+    @NonNull
     @Override
     public String getDeviceId() {
         return "mock";
@@ -97,6 +101,7 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
         return null;
     }
 
+    @NonNull
     @Override
     public String getAppKey() {
         return "mock";
@@ -123,7 +128,7 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
     }
 
     @Override
-    public void log(LogLevel logLevel, int code, String message, String... dimensions) {
+    public void log(@NonNull LogLevel logLevel, int code, @NonNull String message, String... dimensions) {
         LogEntry logEntry = new LogEntry(logLevel, getServerTime(), code, message, dimensions);
 
         if (logLevel == null || code < 0 || code > 99999 || message == null || (dimensions != null && dimensions.length > 4)) {
@@ -138,28 +143,33 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
         return null;
     }
 
+    @NonNull
     @Override
-    public Profile getProfile(Context context) throws AccedoOneException {
+    public Profile getProfile(@NonNull Context context) throws AccedoOneException {
         return new Profile();
     }
 
+    @NonNull
     @Override
-    public ApplicationStatus getApplicationStatus(Context context) {
+    public ApplicationStatus getApplicationStatus(@NonNull Context context) {
         return new ApplicationStatus(Status.ACTIVE, "");
     }
 
+    @NonNull
     @Override
-    public String getMetadata(Context context, String key) throws AccedoOneException {
+    public String getMetadata(@NonNull Context context, @NonNull String key) throws AccedoOneException {
         return getAllMetadata(context).get(key);
     }
 
+    @NonNull
     @Override
-    public Map<String, String> getAllMetadata(Context context) throws AccedoOneException {
+    public Map<String, String> getAllMetadata(@NonNull Context context) throws AccedoOneException {
         return new JSONMapByteParser().parse(getAllMetadataRaw(context).toString().getBytes());
     }
 
+    @NonNull
     @Override
-    public JSONObject getAllMetadataRaw(Context context) throws AccedoOneException {
+    public JSONObject getAllMetadataRaw(@NonNull Context context) throws AccedoOneException {
         if (metadata == null) {
             try {
                 metadata = configSource.getAllMetadata(context);
@@ -170,8 +180,9 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
         return metadata;
     }
 
+    @NonNull
     @Override
-    public byte[] getAsset(Context context, String key) throws AccedoOneException {
+    public byte[] getAsset(@NonNull Context context, @NonNull String key) throws AccedoOneException {
         String url = getAllAssets(context).get(key);
         if (url == null) {
             throw new AccedoOneException(StatusCode.KEY_NOT_FOUND);
@@ -195,8 +206,9 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
         }
     }
 
+    @NonNull
     @Override
-    public Map<String, String> getAllAssets(Context context) throws AccedoOneException {
+    public Map<String, String> getAllAssets(@NonNull Context context) throws AccedoOneException {
         if (assets == null) {
             try {
                 assets = configSource.getAllAssets(context);
@@ -207,8 +219,9 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
         return assets;
     }
 
+    @NonNull
     @Override
-    public Map<String, byte[]> getAllAssetsRaw(Context context) throws AccedoOneException {
+    public Map<String, byte[]> getAllAssetsRaw(@NonNull Context context) throws AccedoOneException {
         HashMap<String, byte[]> result = new HashMap<>();
 
         Map<String, String> assets = getAllAssets(context);
@@ -219,36 +232,43 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
         return result;
     }
 
+    @NonNull
     @Override
     public AsyncAccedoOneControl async() {
         return new AsyncAccedoOneControlImpl(this);
     }
 
+    @NonNull
     @Override
     public AccedoOneControl control() {
         return this;
     }
 
+    @NonNull
     @Override
     public AccedoOneDetect detect() {
         return this;
     }
 
+    @NonNull
     @Override
     public AccedoOneInsight insight() {
         return this;
     }
 
+    @NonNull
     @Override
     public AccedoOneUserData userData() {
         return new MockOneUserData();
     }
 
+    @NonNull
     @Override
     public AccedoOnePublish publish() {
         return new MockOnePublish(configSource);
     }
 
+    @NonNull
     @Override
     public AccedoOneCache cache() {
         throw new UnsupportedOperationException("MockGridService does not support direct cache access.");

@@ -1,5 +1,9 @@
 ## Changelog ##
 
+v1.2.1 (2022-XX-XX)
+
+* Added nullable annotations
+
 v1.2.0 (2022-06-14)
 
 * Removed HttpUrlConnection and added OkHttp3

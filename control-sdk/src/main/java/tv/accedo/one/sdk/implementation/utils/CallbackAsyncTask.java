@@ -1,6 +1,9 @@
 package tv.accedo.one.sdk.implementation.utils;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+
+import androidx.annotation.Nullable;
 
 import java.util.concurrent.Executor;
 
@@ -10,14 +13,16 @@ import tv.accedo.one.sdk.definition.async.Cancellable;
 /**
  * Created by Pásztor Tibor Viktor <tibor.pasztor@accedo.tv> on 2017. 10. 09..
  */
-
+@SuppressLint("StaticFieldLeak")
 public abstract class CallbackAsyncTask<Result, E extends Exception> extends AsyncTask<Void, Void, Result> implements Cancellable {
+    @Nullable
     private Callback<Result> onSuccess;
+    @Nullable
     private Callback<E> onFailure;
-
+    @Nullable
     private E caughtException;
 
-    public CallbackAsyncTask(Callback<Result> onSuccess, Callback<E> onFailure) {
+    public CallbackAsyncTask(@Nullable Callback<Result> onSuccess, @Nullable Callback<E> onFailure) {
         this.onSuccess = onSuccess;
         this.onFailure = onFailure;
     }

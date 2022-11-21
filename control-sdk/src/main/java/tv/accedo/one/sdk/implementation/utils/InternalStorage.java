@@ -10,6 +10,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,11 +33,7 @@ public class InternalStorage {
      * @param object   The object to serialize.
      * @param filename The filename to write into.
      */
-    public static boolean write(Context context, Object object, String filename) {
-        if (object == null) {
-            return false;
-        }
-
+    public static boolean write(@NonNull Context context, @NonNull Object object, @NonNull String filename) {
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
 
@@ -62,7 +61,8 @@ public class InternalStorage {
      * @param filename The filename to read from.
      * @return The deserialized object, or null if unsuccessful.
      */
-    public static Object read(Context context, String filename) {
+    @Nullable
+    public static Object read(@NonNull Context context, @NonNull String filename) {
         ObjectInputStream ois = null;
         FileInputStream fis = null;
         Object result = null;
@@ -92,7 +92,7 @@ public class InternalStorage {
      * @param filename The filename to delete.
      * @return boolean telling if the deletion was successful or no.
      */
-    public static boolean delete(Context context, String filename) {
+    public static boolean delete(@NonNull Context context, @NonNull String filename) {
         return context.getApplicationContext().deleteFile(filename);
     }
 
@@ -103,7 +103,7 @@ public class InternalStorage {
      * @param filename The filename to check.
      * @return boolean telling if the file already exists or no.
      */
-    public static boolean exists(Context context, String filename) {
+    public static boolean exists(@NonNull Context context, @NonNull String filename) {
         try {
             context.getApplicationContext().openFileInput(filename).close();
             return true;

@@ -1,5 +1,8 @@
 package tv.accedo.one.sdk.model;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,7 +11,9 @@ import java.util.Date;
  */
 public class OptionalParams implements Serializable {
 	private boolean preview = false;
+    @Nullable
 	private Date at;
+    @Nullable
     private String locale;
 
     /**
@@ -23,6 +28,7 @@ public class OptionalParams implements Serializable {
 	 * Used to get Entry preview for specific moment of time in past or future. Can not be used if "preview" is set to "true".
 	 * @return
 	 */
+    @Nullable
 	public Date getAt() {
 		return at;
 	}
@@ -32,6 +38,7 @@ public class OptionalParams implements Serializable {
      * attached to every Publish request.
      * @return
      */
+    @Nullable
     public String getLocale() {
         return locale;
     }
@@ -62,14 +69,14 @@ public class OptionalParams implements Serializable {
      * @param locale the locale to use
      * @return
      */
-    public OptionalParams setLocale(String locale) {
+    public OptionalParams setLocale(@NonNull String locale) {
         this.locale = locale;
         return this;
     }
 
 	public OptionalParams() {
 	}
-    public OptionalParams(String locale) {
+    public OptionalParams(@NonNull String locale) {
         this.locale = locale;
     }
     public OptionalParams(OptionalParams optionalParams) {

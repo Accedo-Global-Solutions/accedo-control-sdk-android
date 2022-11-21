@@ -2,6 +2,9 @@ package tv.accedo.one.sdk.definition;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -24,7 +27,8 @@ public interface AccedoOnePublish {
      * @return A single entry defined by the given id
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    JSONObject getEntry(Context context, String id) throws AccedoOneException;
+    @NonNull
+    JSONObject getEntry(@NonNull Context context, @NonNull String id) throws AccedoOneException;
 
     /**
      * @param context
@@ -33,7 +37,8 @@ public interface AccedoOnePublish {
      * @return A single entry defined by the given id
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    JSONObject getEntry(Context context, String id, OptionalParams optionalParams) throws AccedoOneException;
+    @NonNull
+    JSONObject getEntry(@NonNull Context context,@NonNull  String id, @Nullable OptionalParams optionalParams) throws AccedoOneException;
 
     /**
      * @param context
@@ -41,7 +46,8 @@ public interface AccedoOnePublish {
      * @return A list of all the entries defined by the given typeId. This call is not paginated.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    JSONArray getEntries(Context context, String typeId) throws AccedoOneException;
+    @NonNull
+    JSONArray getEntries(@NonNull Context context,@NonNull  String typeId) throws AccedoOneException;
 
     /**
      * @param context
@@ -50,7 +56,8 @@ public interface AccedoOnePublish {
      * @return A list of all the entries defined by the given typeId. This call is not paginated.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    JSONArray getEntries(Context context, String typeId, OptionalParams optionalParams) throws AccedoOneException;
+    @NonNull
+    JSONArray getEntries(@NonNull Context context,@NonNull String typeId, @Nullable OptionalParams optionalParams) throws AccedoOneException;
 
     /**
      * @param context
@@ -59,7 +66,8 @@ public interface AccedoOnePublish {
      * @return A paged list of all the entries defined by the given typeId.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    PagedResponse getEntries(Context context, String typeId, PaginatedParams paginatedParams) throws AccedoOneException;
+    @NonNull
+    PagedResponse getEntries(@NonNull Context context,@NonNull  String typeId, @Nullable PaginatedParams paginatedParams) throws AccedoOneException;
 
     /**
      * @param context
@@ -67,7 +75,8 @@ public interface AccedoOnePublish {
      * @return A list of entries defined by a list of ids. This call is not paginated.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    JSONArray getEntries(Context context, List<String> ids) throws AccedoOneException;
+    @NonNull
+    JSONArray getEntries(@NonNull Context context, @NonNull List<String> ids) throws AccedoOneException;
 
     /**
      * @param context
@@ -76,7 +85,8 @@ public interface AccedoOnePublish {
      * @return A list of entries defined by a list of ids. This call is not paginated.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    JSONArray getEntries(Context context, List<String> ids, OptionalParams optionalParams) throws AccedoOneException;
+    @NonNull
+    JSONArray getEntries(@NonNull Context context, @NonNull List<String> ids, @Nullable OptionalParams optionalParams) throws AccedoOneException;
 
     /**
      * @param context
@@ -85,14 +95,16 @@ public interface AccedoOnePublish {
      * @return A paged list of entries defined by a list of ids.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    PagedResponse getEntries(Context context, List<String> ids, PaginatedParams paginatedParams) throws AccedoOneException;
+    @NonNull
+    PagedResponse getEntries(@NonNull Context context,@NonNull  List<String> ids, @Nullable PaginatedParams paginatedParams) throws AccedoOneException;
 
     /**
      * @param context
      * @return A list of all the entries. This call is not paginated.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    JSONArray getAllEntries(Context context) throws AccedoOneException;
+    @NonNull
+    JSONArray getAllEntries(@NonNull Context context) throws AccedoOneException;
 
     /**
      * @param context
@@ -100,7 +112,8 @@ public interface AccedoOnePublish {
      * @return A list of all the entries. This call is not paginated.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    JSONArray getAllEntries(Context context, OptionalParams optionalParams) throws AccedoOneException;
+    @NonNull
+    JSONArray getAllEntries(@NonNull Context context, @Nullable OptionalParams optionalParams) throws AccedoOneException;
 
     /**
      * @param context
@@ -108,24 +121,28 @@ public interface AccedoOnePublish {
      * @return A paged list of all the entries.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    PagedResponse getAllEntries(Context context, PaginatedParams paginatedParams) throws AccedoOneException;
+    @NonNull
+    PagedResponse getAllEntries(@NonNull Context context, @Nullable PaginatedParams paginatedParams) throws AccedoOneException;
 
     /**
      * @param context
      * @return All available locales for the Organization.
      * @throws AccedoOneException containing appropriate StatusCode on what happened
      */
-    List<PublishLocale> getAvailableLocales(Context context) throws AccedoOneException;
+    @NonNull
+    List<PublishLocale> getAvailableLocales(@NonNull Context context) throws AccedoOneException;
 
     /**
      * Used for connecting asynchronously, using callbacks.
      * @return an {@link AsyncAccedoOnePublish} instance, containing this {@link AccedoOnePublish} instance
      */
+    @NonNull
     AsyncAccedoOnePublish async();
 
     /**
      * Used to fetch Publish entries by alias.
      * @return an {@link AccedoOnePublishByAlias} instance.
      */
+    @NonNull
     AccedoOnePublishByAlias byAlias();
 }

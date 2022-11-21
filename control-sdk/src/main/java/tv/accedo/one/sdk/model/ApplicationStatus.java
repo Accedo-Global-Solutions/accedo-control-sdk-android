@@ -1,5 +1,8 @@
 package tv.accedo.one.sdk.model;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 
 /**
@@ -7,18 +10,20 @@ import java.io.Serializable;
  */
 public class ApplicationStatus implements Serializable {
     public static enum Status{ ACTIVE, MAINTENANCE, UNKNOWN }
+
+    @NonNull private final Status status;
+    @Nullable private final String message;
 	
-	private Status status;
-	private String message;
-	
-	public Status getStatus() {
+	@NonNull
+    public Status getStatus() {
 		return status;
 	}
-	public String getMessage() {
+	@Nullable
+    public String getMessage() {
 		return message;
 	}
 	
-    public ApplicationStatus(Status status, String message) {
+    public ApplicationStatus(@NonNull Status status, @Nullable String message) {
         this.status = status;
         this.message = message;
     }
@@ -28,7 +33,7 @@ public class ApplicationStatus implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((message == null) ? 0 : message.hashCode());
-        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        result = prime * result + status.hashCode();
         return result;
     }
     
@@ -46,9 +51,7 @@ public class ApplicationStatus implements Serializable {
                 return false;
         } else if (!message.equals(other.message))
             return false;
-        if (status != other.status)
-            return false;
-        return true;
+        return status == other.status;
     }
 
     @Override

@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import tv.accedo.one.sdk.implementation.utils.InternalStorage;
@@ -49,7 +50,6 @@ class IfModifiedTask {
         this.url = url;
     }
 
-    @SuppressWarnings("unchecked")
     public <O> O run(ThrowingParser<byte[], O, AccedoOneException> parser) throws AccedoOneException {
         cleanup(context, false);
 
@@ -80,7 +80,7 @@ class IfModifiedTask {
         }
 
         //Process response
-        if (response != null && response.isSuccess()) {
+        if (response != null && response.isSuccess() && response.getRawResponse() != null) {
             //Store if we've successfuly fetched something
             O result = parser.parse(response.getRawResponse());
             InternalStorage.write(context, response.getRawResponse(), key);
@@ -90,16 +90,15 @@ class IfModifiedTask {
 
         } else {
             //Try from offline cache
-            Object result = null;
+            O result = null;
             if (InternalStorage.exists(context, key)) {
                 result = parser.parse((byte[]) InternalStorage.read(context, key));
             }
             if (result != null) {
                 //We got something, lets try to cast and return it
                 try {
-                    O o = (O) result;
                     Utils.log(Log.INFO, "Serving from offline cache: " + request.getUrl());
-                    return o;
+                    return result;
                 } catch (ClassCastException e) {
                     Utils.log(Log.WARN, "Failed to serve from offline cache: " + request.getUrl());
                     InternalStorage.delete(context, key);
@@ -122,7 +121,6 @@ class IfModifiedTask {
         return "ONE" + Utils.md5Hash(removeSession(url) + appKey + gid) + ".t";
     }
 
-
     private static String removeSession(String url) {
         if (url.contains("sessionKey")) {
             try {
@@ -144,8 +142,8 @@ class IfModifiedTask {
         try {
             Integer versionCode = (Integer) InternalStorage.read(context, FILENAME_VERSIONCODE);
 
-            if (force || versionCode == null || versionCode.intValue() < LAST_CACHEBREAKING_VERSION_UPDATE) {
-                for (File file : context.getFilesDir().listFiles()) {
+            if (force || versionCode == null || versionCode < LAST_CACHEBREAKING_VERSION_UPDATE) {
+                for (File file : Objects.requireNonNull(context.getFilesDir().listFiles())) {
                     if (file.getName().startsWith("ONE")) {
                         file.delete();
                     }

@@ -48,9 +48,9 @@ artifactory {
             username = "${artifactory_deploy_user}"
             password = "${artifactory_deploy_password}"
         }
-
         defaults {
-            publications('aar')
+            publications('release')
+            publishArtifacts = true
         }
     }
 }

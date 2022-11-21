@@ -102,7 +102,7 @@ def printlnColor(text, color) {
     println("" + (char) 27 + "[" + color + "m" + text + (char) 27 + "[0m");
 }
 
-def versionNameToCode(versionName) {
+static def versionNameToCode(versionName) {
     if (versionName.contains('-')) {
         versionName = versionName.split('-')[0]
     }

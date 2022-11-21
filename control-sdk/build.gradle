@@ -1,15 +1,17 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+
 group = "tv.accedo.one"
 version = "1.2.1"
-
-apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
 
 android {
     namespace = "tv.accedo.one.sdk"
     compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 31
 
         testInstrumentationRunnerArgument "accedo_one_test_apikey", project.hasProperty("accedo_one_test_apikey") ? "${accedo_one_test_apikey}" : ""

@@ -1,6 +1,6 @@
 ## Changelog ##
 
-v1.2.1 (2022-XX-XX)
+v1.2.1 (2022-11-21)
 
 * Added nullable annotations
 

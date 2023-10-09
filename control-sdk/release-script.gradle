@@ -9,9 +9,6 @@ apply plugin: 'maven-publish'
 
 android.defaultConfig.versionCode = versionNameToCode(version)
 android.defaultConfig.versionName = version
-android.defaultConfig.buildConfigField "String", "MODULE_NAME", "\"" + project.name + "\""
-android.defaultConfig.testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
 
 publishing {
     publications {

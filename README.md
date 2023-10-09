@@ -91,6 +91,16 @@ val accedoControl :AccedoOne = AccedoOneImpl("appKey", getDeviceId())
 
 - Use this instance to access AccedoOne anywhere!
 
+## Publishing
+The publishing task is defined in [release-script.gradle](control-sdk/release-script.gradle) file.
+
+You're required to define 
+ - `artifactory_deploy_user` and `artifactory_deploy_password` for JFrog Artifactory
+ - `github_user` and `github_api_token` for GitHub
+ - Run JFrog publish task `control-sdk:artifactoryPublish` 
+ - Run GitHub publish task `control-sdk:publishAllPublicationsToGithubPackagesRepository`
+ - Run `tag` task to auto-tag the version in git
+
 ## Examples
 
 Below are a few examples on how to access certain parts of Accedo One via this SDK.

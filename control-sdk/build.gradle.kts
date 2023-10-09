@@ -38,8 +38,8 @@ android {
 }
 
 dependencies {
-    implementation("androidx.annotation:annotation:1.5.0")
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("androidx.annotation:annotation:1.7.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

@@ -1,5 +1,10 @@
 ## Changelog ##
 
+v1.2.2 (2023-10-09)
+
+* Updated AndroidX Annotations to 1.7.0
+* Updated OkHttp to 4.11.0
+
 v1.2.1 (2022-11-21)
 
 * Added nullable annotations

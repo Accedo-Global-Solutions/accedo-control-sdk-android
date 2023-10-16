@@ -36,4 +36,19 @@ subprojects {
         }
     }
 }
+
+tasks {
+    register("libraryVersion") {
+        doLast {
+            val controlSdkVersion = subprojects.find { it.name == "control-sdk" }?.version?.toString()
+            if (!controlSdkVersion.isNullOrEmpty() && controlSdkVersion != "unspecified") {
+                val versionsFile = file("libraryVersion.txt")
+                if (versionsFile.exists()) {
+                    versionsFile.delete()
+                }
+                versionsFile.writeText(controlSdkVersion)
+            }
+        }
+    }
+
 }

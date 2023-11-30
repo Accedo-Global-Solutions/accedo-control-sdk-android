@@ -110,6 +110,7 @@ String gradleTask(String taskName) {
            -Partifactory_deploy_password=${env.ARTIFACTORY_DEPLOY_PASSWORD} \
            -Pgithub_deploy_user=${env.GITHUB_DEPLOY_USER} \
            -Pgithub_deploy_token=${env.GITHUB_DEPLOY_TOKEN} \
+           -Paccedo_one_test_apikey=${env.ACCEDO_TEST_API_KEY} \
            --no-daemon \
            """
 }

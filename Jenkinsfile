@@ -17,7 +17,7 @@ runPipeline(
                 disableConcurrentBuilds(abortPrevious: true)
         ],
         dockerImages: [
-                android: 'alvrme/alpine-android:android-33-jdk17-v2023.06.10'
+                android: "alvrme/alpine-android:android-34-jdk17-v2023.09.10"
         ],
         envVarsFileId: 'env-vars',
         credentials: [
@@ -35,13 +35,13 @@ runPipeline(
         ]
 ) { cts ->
     stage('Build') {
-        cts.android.run(gradleTask('assembleDebug'))
+        cts.android.run(gradleTask('assemble'))
     }
     stage('Lint Check') {
         cts.android.run(gradleTask('lintDebug'))
     }
     stage('UnitTest Check') {
-        cts.android.run(gradleTask('unitTests koverXmlReport koverMergedReport koverMergedVerify'))
+        cts.android.run(gradleTask('testDebugUnitTest'))
     }
     stage('Sonar Analysis') {
         def branchArgs = ''

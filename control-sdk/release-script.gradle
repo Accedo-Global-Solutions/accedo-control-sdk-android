@@ -38,7 +38,7 @@ publishing {
 }
 
 artifactory {
-    contextUrl = "${artifactory_contextUrl}"
+    contextUrl = "https://repo.cloud.accedo.tv/artifactory"
     publish {
         repository {
             repoKey = "control-sdk-android"

@@ -91,7 +91,7 @@ runPipeline(
                         echo "ERROR: ${e.message}"
                     }
 
-                    gitTag(libraryVersion.replace(":", "-"))
+                    gitTag("release/${libraryVersion}")
                 } else {
                     echo "Tag ${libraryVersion} already exists."
                 }

@@ -27,11 +27,10 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-
             url = "https://maven.pkg.github.com/Accedo-Global-Solutions/accedo-control-sdk-android"
             credentials {
-                username = "${github_user}"
-                password = "${github_api_token}"
+                username = "${github_deploy_user}"
+                password = "${github_deploy_token}"
             }
         }
     }

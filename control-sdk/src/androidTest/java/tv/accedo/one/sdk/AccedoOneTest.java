@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Map;
 
 import tv.accedo.one.sdk.definition.AccedoOne;
@@ -29,6 +30,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 public class AccedoOneTest {
     private final AccedoOne accedoOne = new AccedoOneImpl(Shared.API_URL, Shared.APP_ID, Shared.DEVICE_ID).setLoggingPeriod(300);
+    private final AccedoOne accedoOneConditional = new AccedoOneImpl(Shared.API_URL, Shared.APP_ID, Shared.DEVICE_ID).setLoggingPeriod(300).setCustomCondition("mockKey", "mockValue");
     private final AccedoOne accedoOneGid = new AccedoOneImpl(Shared.API_URL, Shared.APP_ID, Shared.DEVICE_ID).setGid("TESTGID");
     private final AccedoOne accedoOneInvalidGid = new AccedoOneImpl(Shared.API_URL, Shared.APP_ID, Shared.DEVICE_ID).setGid("TESTINVALIDGID");
     private final AccedoOne accedoOneFailing = new AccedoOneImpl("http://www.notappgrid.com", Shared.APP_ID, Shared.DEVICE_ID);
@@ -144,6 +146,19 @@ public class AccedoOneTest {
     public void testProfile() {
         try {
             Profile profile = accedoOne.control().getProfile(Shared.getContext());
+            assertNotNull(profile);
+            assertNotNull(profile.getProfileId());
+        } catch (AccedoOneException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void testProfileWithConditions() {
+        try {
+
+            Profile profile = accedoOneConditional.control().getProfile(Shared.getContext());
             assertNotNull(profile);
             assertNotNull(profile.getProfileId());
         } catch (AccedoOneException e) {

@@ -28,7 +28,7 @@ subprojects {
         properties {
             property("sonar.projectVersion", "#${this@subprojects.version}")
             property("sonar.coverage.jacoco.xmlReportPaths", "${this@subprojects.buildDir}/reports/jacoco.xml")
-            property("sonar.java.binaries", "${this@subprojects.buildDir}/classes/java")
+            property("sonar.java.binaries", "${this@subprojects.buildDir}/intermediates/javac/debug/classes")
             property("sonar.junit.reportPaths", "$buildDir/test-results/testDebugUnitTest")
             property("sonar.sources", "${this@subprojects.projectDir}/src/main/java")
             property("sonar.tests", "${this@subprojects.projectDir}/src/test/java")

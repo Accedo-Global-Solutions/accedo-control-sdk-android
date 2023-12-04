@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -101,6 +102,18 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
         return null;
     }
 
+    /**
+     * @return map of custom conditions to be used for whitelisting. Can be null.
+     * @since 1.3.0
+     */
+    @Nullable
+    @Override
+    public Map<String, String> getCustomConditions() {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("mockKey", "mockValue");
+        return map;
+    }
+
     @NonNull
     @Override
     public String getAppKey() {
@@ -131,7 +144,7 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
     public void log(@NonNull LogLevel logLevel, int code, @NonNull String message, String... dimensions) {
         LogEntry logEntry = new LogEntry(logLevel, getServerTime(), code, message, dimensions);
 
-        if (logLevel == null || code < 0 || code > 99999 || message == null || (dimensions != null && dimensions.length > 4)) {
+        if (code < 0 || code > 99999 || (dimensions != null && dimensions.length > 4)) {
             Utils.log(Log.WARN, "Invalid logEntry, skipping: " + logEntry.toString());
         } else {
             logEntry.toLogCat();

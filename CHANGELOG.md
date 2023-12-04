@@ -1,5 +1,10 @@
 ## Changelog ##
 
+v.1.3.0 (2023-12-04)
+
+* Add support for Custom Conditions to be used in whitelisting
+* Updated OkHttp to 4.12.0
+
 v1.2.2 (2023-10-09)
 
 * Updated AndroidX Annotations to 1.7.0

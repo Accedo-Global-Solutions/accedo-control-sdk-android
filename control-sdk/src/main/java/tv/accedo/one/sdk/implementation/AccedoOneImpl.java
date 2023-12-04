@@ -13,37 +13,36 @@ import androidx.annotation.Nullable;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import tv.accedo.one.sdk.definition.AccedoOne;
 import tv.accedo.one.sdk.definition.AccedoOneCache;
 import tv.accedo.one.sdk.definition.AccedoOneControl;
+import tv.accedo.one.sdk.definition.AccedoOneDetect;
 import tv.accedo.one.sdk.definition.AccedoOneInsight;
 import tv.accedo.one.sdk.definition.AccedoOnePublish;
-import tv.accedo.one.sdk.definition.AccedoOneDetect;
-import tv.accedo.one.sdk.definition.AccedoOne;
 import tv.accedo.one.sdk.definition.AccedoOneUserData;
 import tv.accedo.one.sdk.definition.async.AsyncAccedoOneControl;
 import tv.accedo.one.sdk.implementation.async.AsyncAccedoOneControlImpl;
-import tv.accedo.one.sdk.implementation.utils.DnsSelector;
-import tv.accedo.one.sdk.implementation.utils.NetworkConfiguration;
-import tv.accedo.one.sdk.implementation.utils.Utils;
-import tv.accedo.one.sdk.implementation.utils.Response;
-import tv.accedo.one.sdk.implementation.utils.Request;
-import tv.accedo.one.sdk.model.AccedoOneException;
-import tv.accedo.one.sdk.model.AccedoOneException.StatusCode;
-import tv.accedo.one.sdk.model.ApplicationStatus;
-import tv.accedo.one.sdk.model.ApplicationStatus.Status;
-import tv.accedo.one.sdk.model.Profile;
 import tv.accedo.one.sdk.implementation.parsers.ApplicationStatusParser;
 import tv.accedo.one.sdk.implementation.parsers.ByteArrayParser;
 import tv.accedo.one.sdk.implementation.parsers.JSONMapByteParser;
 import tv.accedo.one.sdk.implementation.parsers.JSONObjectByteParser;
 import tv.accedo.one.sdk.implementation.parsers.ProfileParser;
 import tv.accedo.one.sdk.implementation.parsers.SessionParser;
+import tv.accedo.one.sdk.implementation.utils.DnsSelector;
+import tv.accedo.one.sdk.implementation.utils.NetworkConfiguration;
+import tv.accedo.one.sdk.implementation.utils.Request;
+import tv.accedo.one.sdk.implementation.utils.Response;
+import tv.accedo.one.sdk.implementation.utils.Utils;
+import tv.accedo.one.sdk.model.AccedoOneException;
+import tv.accedo.one.sdk.model.AccedoOneException.StatusCode;
+import tv.accedo.one.sdk.model.ApplicationStatus;
+import tv.accedo.one.sdk.model.ApplicationStatus.Status;
+import tv.accedo.one.sdk.model.Profile;
 
 /**
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
@@ -113,7 +112,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
      */
     public AccedoOneImpl setCustomCondition(String key, String value) {
         if (this.customConditions == null) {
-            this.customConditions = new HashMap<>();
+            this.customConditions = new HashMap<String, String>();
         }
         this.customConditions.put(key, value);
         return this;

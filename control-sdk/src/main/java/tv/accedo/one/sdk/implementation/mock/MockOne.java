@@ -109,7 +109,7 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
     @Nullable
     @Override
     public Map<String, String> getCustomConditions() {
-        HashMap map = new HashMap();
+        HashMap<String, String> map = new HashMap<String, String>();
         map.put("mockKey", "mockValue");
         return map;
     }
@@ -144,7 +144,7 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
     public void log(@NonNull LogLevel logLevel, int code, @NonNull String message, String... dimensions) {
         LogEntry logEntry = new LogEntry(logLevel, getServerTime(), code, message, dimensions);
 
-        if (logLevel == null || code < 0 || code > 99999 || message == null || (dimensions != null && dimensions.length > 4)) {
+        if (code < 0 || code > 99999 || (dimensions != null && dimensions.length > 4)) {
             Utils.log(Log.WARN, "Invalid logEntry, skipping: " + logEntry.toString());
         } else {
             logEntry.toLogCat();

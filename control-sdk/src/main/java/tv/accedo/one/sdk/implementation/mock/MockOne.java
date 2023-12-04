@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -99,6 +100,18 @@ public class MockOne implements AccedoOne, AccedoOneControl, AccedoOneDetect, Ac
     @Override
     public String getGid() {
         return null;
+    }
+
+    /**
+     * @return map of custom conditions to be used for whitelisting. Can be null.
+     * @since 1.3.0
+     */
+    @Nullable
+    @Override
+    public Map<String, String> getCustomConditions() {
+        HashMap map = new HashMap();
+        map.put("mockKey", "mockValue");
+        return map;
     }
 
     @NonNull

@@ -20,7 +20,6 @@ sonar {
         property("sonar.sourceEncoding", "UTF-8")
         property("sonar.tags", "control-sdk-android, android")
         property("sonar.verbose", true)
-        property("sonar.tests", "$projectDir/src/androidTest/java")
     }
 }
 

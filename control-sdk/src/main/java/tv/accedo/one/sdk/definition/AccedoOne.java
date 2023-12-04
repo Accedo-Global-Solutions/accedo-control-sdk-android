@@ -3,6 +3,8 @@ package tv.accedo.one.sdk.definition;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Map;
+
 /**
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
@@ -24,6 +26,13 @@ public interface AccedoOne {
      */
     @Nullable
     String getGid();
+
+    /**
+     * @return map of custom conditions to be used for whitelisting. Can be null.
+     * @since 1.3.0
+     */
+    @Nullable
+    Map<String, String> getCustomConditions();
 
     /**
      * @return the appKey this service connects to. Normally shouldn't be null.

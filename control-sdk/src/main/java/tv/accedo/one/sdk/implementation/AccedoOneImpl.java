@@ -8,10 +8,12 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
@@ -55,6 +57,8 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     private String appKey;
     private String deviceId;
     private String gid;
+
+    private Map<String,String> customConditions;
     protected OkHttpClient okHttpClient;
 
     //Storage
@@ -101,6 +105,46 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     }
 
     /**
+     * Add a custom condition used for whitelisting
+     * @param key
+     * @param value
+     * @return this
+     * @since 1.3.0
+     */
+    public AccedoOneImpl setCustomCondition(String key, String value) {
+        if (this.customConditions == null) {
+            this.customConditions = new HashMap<>();
+        }
+        this.customConditions.put(key, value);
+        return this;
+    }
+
+    /**
+     * Remove a custom condition from the lost of conditions used for whitelisting
+     * @param key
+     * @return this
+     * @since 1.3.0
+     */
+    public AccedoOneImpl removeCustomCondition(String key) {
+        if (this.customConditions != null) {
+            this.customConditions.remove(key);
+        }
+        return this;
+    }
+
+    /**
+     * Clear all custom conditions used for whitelisting
+     * @return this
+     * @since 1.3.0
+     */
+    public AccedoOneImpl clearCustomConditions() {
+        if (this.customConditions != null) {
+            this.customConditions.clear();
+        }
+        return this;
+    }
+
+    /**
      * Should only be called right after initialising the service.
      *
      * @param loggingPeriod the amount of time the app waits before sending out logs, so it can batch log requests, in milliseconds.
@@ -138,6 +182,16 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         return gid;
     }
 
+    /**
+     * @return list of custom cpnditions to be used for whitelisting. Can be null.
+     * @since 1.3.0
+     */
+    @Nullable
+    @Override
+    public Map<String, String> getCustomConditions() {
+        return customConditions;
+    }
+
     @NonNull
     @Override
     public String getAppKey() {
@@ -168,6 +222,33 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     }
 
     /**
+     * @since 1.3.0
+     * @param appKey   the hash of your Application inside Accedo One to connect to.
+     * @param deviceId a unique identifier of your device. (Eg AndroidID)
+     * @param customConditions map of custom whitelisting conditions to be added to requests. Can be null
+     */
+    public AccedoOneImpl(@NonNull String appKey, @NonNull String deviceId, @Nullable Map<String,String> customConditions) {
+        this.appKey = appKey;
+        this.deviceId = deviceId;
+        this.customConditions = customConditions;
+        initNetworkClient(new NetworkConfiguration.Builder().build());
+    }
+
+    /**
+     * @since 1.3.0
+     * @param appKey   the hash of your Application inside Accedo One to connect to.
+     * @param deviceId a unique identifier of your device. (Eg AndroidID)
+     * @param customConditions map of custom whitelisting conditions to be added to requests. Can be null
+     * @param networkConfiguration
+     */
+    public AccedoOneImpl(@NonNull String appKey, @NonNull String deviceId, @Nullable Map<String,String> customConditions, @NonNull NetworkConfiguration networkConfiguration) {
+        this.appKey = appKey;
+        this.deviceId = deviceId;
+        this.customConditions = customConditions;
+        initNetworkClient(networkConfiguration);
+    }
+
+    /**
      * @param endpoint The endpoint to connect to. The default is {@link Constants.DEFAULT_ENDPOINT}.
      * @param appKey   the hash of your Application inside Accedo One to connect to.
      * @param deviceId a unique identifier of your device. (Eg AndroidID)
@@ -183,6 +264,37 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         this.endpoint = endpoint;
         this.appKey = appKey;
         this.deviceId = deviceId;
+        initNetworkClient(networkConfiguration);
+    }
+
+    /**
+     * @since 1.3.0
+     * @param endpoint The endpoint to connect to. The default is {@link Constants.DEFAULT_ENDPOINT}.
+     * @param appKey   the hash of your Application inside Accedo One to connect to.
+     * @param deviceId a unique identifier of your device. (Eg AndroidID)
+     * @param customConditions map of custom whitelisting conditions to be added to requests. Can be null
+     */
+    public AccedoOneImpl(@NonNull String endpoint, @NonNull String appKey, @NonNull String deviceId, @Nullable Map<String, String> customConditions) {
+        this.endpoint = endpoint;
+        this.appKey = appKey;
+        this.deviceId = deviceId;
+        this.customConditions = customConditions;
+        initNetworkClient(new NetworkConfiguration.Builder().build());
+    }
+
+    /**
+     * @since 1.3.0
+     * @param endpoint The endpoint to connect to. The default is {@link Constants.DEFAULT_ENDPOINT}.
+     * @param appKey   the hash of your Application inside Accedo One to connect to.
+     * @param deviceId a unique identifier of your device. (Eg AndroidID)
+     * @param networkConfiguration
+     * @param customConditions map of custom whitelisting conditions to be added to requests. Can be null
+     */
+    public AccedoOneImpl(@NonNull String endpoint, @NonNull String appKey, @NonNull String deviceId, @NonNull NetworkConfiguration networkConfiguration, @Nullable Map<String, String> customConditions) {
+        this.endpoint = endpoint;
+        this.appKey = appKey;
+        this.deviceId = deviceId;
+        this.customConditions = customConditions;
         initNetworkClient(networkConfiguration);
     }
 
@@ -351,6 +463,11 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         Uri uri = Uri.parse(url);
         if (!TextUtils.isEmpty(gid)) {
             uri = uri.buildUpon().appendQueryParameter("gid", gid).build();
+        }
+        if (this.customConditions != null) {
+            for (Entry<String, String> entry : this.customConditions.entrySet()) {
+                uri = uri.buildUpon().appendQueryParameter("cc", entry.getKey() + ":" + entry.getValue()).build();
+            }
         }
         return new Request(uri.toString());
     }

@@ -6,19 +6,6 @@
 
 package tv.accedo.one.sdk;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
-
-import tv.accedo.one.sdk.definition.AccedoOne;
-import tv.accedo.one.sdk.implementation.AccedoOneImpl;
-import tv.accedo.one.sdk.model.AccedoOneException;
-import tv.accedo.one.sdk.model.ApplicationStatus.Status;
-import tv.accedo.one.sdk.model.Profile;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -26,6 +13,18 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.net.UnknownHostException;
+import java.util.Map;
+
+import tv.accedo.one.sdk.definition.AccedoOne;
+import tv.accedo.one.sdk.implementation.AccedoOneImpl;
+import tv.accedo.one.sdk.model.AccedoOneException;
+import tv.accedo.one.sdk.model.ApplicationStatus.Status;
+import tv.accedo.one.sdk.model.Profile;
 
 @RunWith(AndroidJUnit4.class)
 public class AccedoOneTest {

@@ -1,5 +1,14 @@
 ## Changelog ##
 
+v.1.3.1 (2023-12-11)
+
+* Same as 1.3.0
+
+v.1.3.1-kotlin.1.7.10 (2023-12-11)
+
+* Force Kotlin 1.7.10 compatibility
+* Downgrade OkHttp to 4.11.0
+
 v.1.3.0 (2023-12-04)
 
 * Add support for Custom Conditions to be used in whitelisting

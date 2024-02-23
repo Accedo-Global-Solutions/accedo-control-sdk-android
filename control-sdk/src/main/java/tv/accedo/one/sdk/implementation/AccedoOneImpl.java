@@ -214,6 +214,19 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
         initNetworkClient(new NetworkConfiguration.Builder().build());
     }
 
+    /**
+     * This constructor uses the default endpoint of {@link Constants.DEFAULT_ENDPOINT}
+     *
+     * @param appKey   the hash of your Application inside Accedo One to connect to.
+     * @param deviceId a unique identifier of your device. (Eg AndroidID)
+     * @param networkClient Use a custom OkHttpClient - useful in testing to allow using mock responses
+     */
+    public AccedoOneImpl(@NonNull String appKey, @NonNull String deviceId, @NonNull OkHttpClient networkClient) {
+        this.appKey = appKey;
+        this.deviceId = deviceId;
+        this.okHttpClient = networkClient;
+    }
+
     public AccedoOneImpl(@NonNull String appKey, @NonNull String deviceId, @NonNull NetworkConfiguration networkConfiguration) {
         this.appKey = appKey;
         this.deviceId = deviceId;

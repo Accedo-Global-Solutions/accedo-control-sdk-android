@@ -15,20 +15,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import tv.accedo.one.sdk.definition.AccedoOnePublishByAlias;
 import tv.accedo.one.sdk.definition.AccedoOnePublish;
+import tv.accedo.one.sdk.definition.AccedoOnePublishByAlias;
 import tv.accedo.one.sdk.definition.async.AsyncAccedoOnePublish;
 import tv.accedo.one.sdk.implementation.async.AsyncAccedoOnePublishImpl;
+import tv.accedo.one.sdk.implementation.parsers.JSONObjectParser;
+import tv.accedo.one.sdk.implementation.parsers.PagedResponseParser;
+import tv.accedo.one.sdk.implementation.parsers.PublishLocalesParser;
 import tv.accedo.one.sdk.implementation.utils.Utils;
 import tv.accedo.one.sdk.model.AccedoOneException;
 import tv.accedo.one.sdk.model.AccedoOneException.StatusCode;
-import tv.accedo.one.sdk.model.PublishLocale;
 import tv.accedo.one.sdk.model.OptionalParams;
 import tv.accedo.one.sdk.model.PagedResponse;
 import tv.accedo.one.sdk.model.PaginatedParams;
-import tv.accedo.one.sdk.implementation.parsers.PublishLocalesParser;
-import tv.accedo.one.sdk.implementation.parsers.JSONObjectParser;
-import tv.accedo.one.sdk.implementation.parsers.PagedResponseParser;
+import tv.accedo.one.sdk.model.PublishLocale;
 
 /**
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>

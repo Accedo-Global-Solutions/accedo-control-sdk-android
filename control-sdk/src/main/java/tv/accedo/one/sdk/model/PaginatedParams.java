@@ -1,5 +1,7 @@
 package tv.accedo.one.sdk.model;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 /**
@@ -80,5 +82,11 @@ public class PaginatedParams extends OptionalParams implements Serializable {
         result = 31 * result + offset;
         result = 31 * result + size;
         return result;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "PaginatedParams (Locale: " + this.getLocale() +", Offset: " + this.getOffset() +", Size: " + this.getSize() +")";
     }
 }

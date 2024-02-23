@@ -6,14 +6,14 @@ plugins {
 }
 
 group = "tv.accedo.one"
-version = "1.3.2"
+version = "1.3.3"
 
 android {
     namespace = "tv.accedo.one.sdk"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 21
 
         buildConfigField("String", "MODULE_NAME", "\"${project.name}\"")
 

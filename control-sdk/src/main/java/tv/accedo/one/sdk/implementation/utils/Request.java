@@ -26,7 +26,7 @@ import okhttp3.RequestBody;
 public class Request {
     public static final String TAG = "RestClient";
 
-    public static enum Method {
+    public enum Method {
         GET,
         POST,
         PUT,
@@ -40,7 +40,7 @@ public class Request {
     protected Exception caughtCreationException;
     @NonNull
     protected Charset charset = StandardCharsets.UTF_8;
-    protected ArrayList<HttpCookie> cookies = new ArrayList<HttpCookie>();
+    protected ArrayList<HttpCookie> cookies = new ArrayList<>();
     @Nullable
     protected OnResponseListener onResponseListener;
 
@@ -60,7 +60,7 @@ public class Request {
     public Request setMethod(Method method, @Nullable String payload) {
         try {
             RequestBody body = null;
-            if (payload != null && payload.isEmpty()) {
+            if (payload != null && !payload.isEmpty()) {
                 body = RequestBody.create(payload.getBytes(charset));
             }
             requestBuilder.method(method.name(), body);

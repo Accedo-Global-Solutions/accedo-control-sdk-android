@@ -1,12 +1,16 @@
 ## Changelog ##
 
+v1.3.4 (2024-06-18)
+
+* Fix null check for request payloads
+
 v1.3.3 (2024-02-23)
 
-Fix for minSdk level (reverted from 23 to 21 as previously)
+* Fix for minSdk level (reverted from 23 to 21 as previously)
 
 v1.3.2 (2024-02-23)
 
-Allow option to use custom OkHttpClient, useful for intercepting and mocking responses in tests
+* Allow option to use custom OkHttpClient, useful for intercepting and mocking responses in tests
 
 v.1.3.1 (2023-12-11)
 

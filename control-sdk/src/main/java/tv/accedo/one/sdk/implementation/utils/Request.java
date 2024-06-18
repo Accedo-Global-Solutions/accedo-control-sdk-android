@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
@@ -60,7 +61,7 @@ public class Request {
     public Request setMethod(Method method, @Nullable String payload) {
         try {
             RequestBody body = null;
-            if (payload != null && payload.isEmpty()) {
+            if (payload != null && !payload.isEmpty()) {
                 body = RequestBody.create(payload.getBytes(charset));
             }
             requestBuilder.method(method.name(), body);
@@ -203,10 +204,11 @@ public class Request {
         okhttp3.Request req = requestBuilder.build();
 
         if (caughtCreationException == null) {
-            req.url();
             try {
                 //Logging
-                Utils.log(Log.DEBUG, "Sending " + req.method() + " request: " + req.url());
+                Utils.log(Log.DEBUG,
+                        String.format(Locale.getDefault(),
+                                "Sending %s \n request: %s\n headers: %s", req.method(),  req.url(), req.headers()));
 
                 //Request
                 okhttp3.Response okHttpResponse = okHttpClient.newCall(req).execute();
@@ -216,18 +218,22 @@ public class Request {
             } catch (Exception e) {
                 Utils.log(e);
                 response = new Response(url, e);
+                Utils.log(Log.DEBUG, String.format(Locale.getDefault(),
+                        "OKHttp request failed returning the exception.\nRequest for %s \nresponse -> %s\nheaders -> %s",
+                        req.url(),
+                        response.getText(),
+                        response.getHeaders()));
             }
-
         }
 
         return response;
     }
 
-    public static interface OnResponseListener {
-        public void onResponse(Response response);
+    public interface OnResponseListener {
+        void onResponse(Response response);
     }
 
-    public static interface ResponseChecker<T extends Exception> {
-        public void throwIfNecessary(Response response) throws T;
+    public interface ResponseChecker<T extends Exception> {
+        void throwIfNecessary(Response response) throws T;
     }
 }

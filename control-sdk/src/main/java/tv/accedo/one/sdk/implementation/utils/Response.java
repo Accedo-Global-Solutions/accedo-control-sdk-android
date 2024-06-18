@@ -150,7 +150,7 @@ public class Response {
         headers.putAll(okHttpResponse.headers().toMultimap());
 
         //Logging
-        Utils.log(Log.DEBUG, "Response " + code + " for: " + getUrl() + "\n" + getText());
+        Utils.log(Log.DEBUG, "Response " + code + " for: " + getUrl() + "\n" + getText() + "\n" + "headers: " + getHeaders());
     }
 
     /**

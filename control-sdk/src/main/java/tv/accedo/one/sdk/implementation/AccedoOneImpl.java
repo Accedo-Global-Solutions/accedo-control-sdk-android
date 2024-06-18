@@ -52,23 +52,23 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
 
     //Incoming parameters
     private String endpoint = DEFAULT_ENDPOINT;
-    private String appKey;
+    private final String appKey;
     private String deviceId;
     private String gid;
     protected OkHttpClient okHttpClient;
 
     //Storage
-    private ConditionVariable cvSession = new ConditionVariable(true);
+    private final ConditionVariable cvSession = new ConditionVariable(true);
     private Pair<String, Long> session;
 
-    //Subservices
-    private AccedoOneDetectImpl accedoOneDetectImpl = new AccedoOneDetectImpl(this);
+    //Sub-services
+    private final AccedoOneDetectImpl accedoOneDetectImpl = new AccedoOneDetectImpl(this);
 
     /**
      * Should only be called right after initialising the service.
      *
      * @param endpoint the url of the Accedo One server used. The default value is stored in DEFAULT_ENDPOINT.
-     * @return
+     * @return AccedoOneImpl instance
      */
     public AccedoOneImpl setEndpoint(String endpoint) {
         throwIfSessionInitialised();
@@ -80,7 +80,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
      * Should only be called right after initialising the service.
      *
      * @param deviceId the deviceId sent to Accedo One. The default value is DeviceIdentifier.getDeviceId(context);
-     * @return
+     * @return AccedoOneImpl instance
      */
     public AccedoOneImpl setDeviceId(String deviceId) {
         throwIfSessionInitialised();
@@ -92,7 +92,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
      * Should only be called right after initialising the service. Changing the GID within one session is unsupported.
      *
      * @param gid an optional global identifier used for whitelisting.
-     * @return
+     * @return AccedoOneImpl instance
      */
     public AccedoOneImpl setGid(String gid) {
         throwIfSessionInitialised();
@@ -114,7 +114,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
      * Should only be called right after initialising the service.
      *
      * @param loglevelInvalidation the amount of time this service should wait between fetching the currently set log level from Accedo One, in milliseconds.
-     * @return
+     * @return AccedoOneImpl instance
      */
     public AccedoOneImpl setLoglevelInvalidation(long loglevelInvalidation) {
         accedoOneDetectImpl.setLoglevelInvalidation(loglevelInvalidation);
@@ -158,7 +158,7 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     public AccedoOneImpl(@NonNull String appKey, @NonNull String deviceId) {
         this.appKey = appKey;
         this.deviceId = deviceId;
-        initNetworkClient(new NetworkConfiguration.Builder().build());
+        initNetworkClient(new NetworkConfiguration.Builder().setForceIpv4(true).build());
     }
 
     public AccedoOneImpl(@NonNull String appKey, @NonNull String deviceId, @NonNull NetworkConfiguration networkConfiguration) {
@@ -189,7 +189,10 @@ public class AccedoOneImpl extends Constants implements AccedoOne, AccedoOneCont
     private void initNetworkClient(@NonNull NetworkConfiguration networkConfiguration) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(networkConfiguration.getConnectionTimeout(), TimeUnit.MILLISECONDS)
-                .readTimeout(networkConfiguration.getReadTimeout(), TimeUnit.MILLISECONDS);
+                .readTimeout(networkConfiguration.getReadTimeout(), TimeUnit.MILLISECONDS)
+
+                .callTimeout(networkConfiguration.getReadTimeout(), TimeUnit.MILLISECONDS)
+                .writeTimeout(networkConfiguration.getReadTimeout(), TimeUnit.MILLISECONDS);
 
         if (networkConfiguration.isForceIpv4()) {
             builder.dns(new DnsSelector());

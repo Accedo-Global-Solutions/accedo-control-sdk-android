@@ -1,5 +1,6 @@
 package tv.accedo.one.sdk.implementation;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -86,6 +87,7 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Cancellable purgeLogs() {
         handler.removeMessages(MESSAGE_PURGE);
@@ -133,6 +135,7 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
         }.executeAndReturn();
     }
 
+    @SuppressLint("StaticFieldLeak")
     private Cancellable logAppEvent(final String event, final Integer retentionSeconds) {
         return new CallbackAsyncTask<Void, Exception>() {
             @Override
@@ -160,7 +163,7 @@ public class AccedoOneDetectImpl extends Constants implements AccedoOneDetect {
     }
 
     private LogLevel getActiveLogLevel() throws AccedoOneException {
-        //If we have a loglevel and its valid, return
+        //If we have a logLevel and its valid, return
         if (storedActiveLogLevel != null && storedActiveLogLevel.second > accedoOneImpl.getServerTime()) {
             return storedActiveLogLevel.first;
         }

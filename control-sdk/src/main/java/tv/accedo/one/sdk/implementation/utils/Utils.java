@@ -23,16 +23,24 @@ import java.util.List;
  * @author Pásztor Tibor Viktor <tibor.pasztor@accedo.tv>
  */
 public class Utils {
+    private static boolean isDebuggable;
+
+    //If method triggered, will set proper isDebuggable value, what later is used for enabling/disabling log outputs.
     public static boolean isDebuggable(Context context) {
-        return (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+        isDebuggable = (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+        return isDebuggable;
     }
 
     public static void log(int priority, String message) {
-        Log.println(priority, "Accedo One", message);
+        if (isDebuggable) {
+            Log.println(priority, "Accedo One", message);
+        }
     }
 
     public static void log(Exception e) {
-        Log.w("Accedo One", e);
+        if (isDebuggable) {
+            Log.w("Accedo One", e);
+        }
     }
 
     public static String md5Hash(String toHash) {

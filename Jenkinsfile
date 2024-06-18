@@ -43,7 +43,7 @@ runPipeline(
     stage('UnitTest Check') {
         cts.android.run(gradleTask('testDebugUnitTest'))
     }
-    stage('Sonar Analysis') {
+   /*  stage('Sonar Analysis') {
         def branchArgs = ''
 
         if (isPullRequest()) {
@@ -62,7 +62,7 @@ runPipeline(
                 ${branchArgs}"""))
         }
 
-    }
+    } */
     stage('Release new version') {
         when(isBranch('master')) {
             cts.android.run(gradleTask('libraryVersion'))

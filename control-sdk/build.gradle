@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 33
 
         testInstrumentationRunnerArgument "accedo_one_test_apikey", project.hasProperty("accedo_one_test_apikey") ? "${accedo_one_test_apikey}" : ""
     }

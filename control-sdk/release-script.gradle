@@ -55,50 +55,48 @@ artifactory {
     }
 }
 
-tasks.register(
-        tag() {
-            doLast {
-                def tagname = "release/" + version
+tasks.register('tag') {
+    doLast {
+        def tagname = "release/" + version
 
-                def stdout = new ByteArrayOutputStream()
+        def stdout = new ByteArrayOutputStream()
 
-                //Tag localy
-                int exitValue = exec {
-                    commandLine 'git', 'tag', tagname
+        //Tag localy
+        int exitValue = exec {
+            commandLine 'git', 'tag', tagname
+            standardOutput = stdout
+            errorOutput = stdout
+            ignoreExitValue = true
+        }.getExitValue()
+
+        if (exitValue == 0) {
+            //If local tagging successful, try to upload
+            exitValue = exec {
+                commandLine 'git', 'push', 'origin', tagname
+                standardOutput = stdout
+                errorOutput = stdout
+                ignoreExitValue = true
+            }.getExitValue()
+
+            //If upload failed, delete local tag
+            if (exitValue != 0) {
+                printlnColor(" --> Uploading tag failed, reverting: " + tagname, 31);
+                exitValue = exec {
+                    commandLine 'git', 'tag', '-d', tagname
                     standardOutput = stdout
                     errorOutput = stdout
                     ignoreExitValue = true
                 }.getExitValue()
-
-                if (exitValue == 0) {
-                    //If local tagging successful, try to upload
-                    exitValue = exec {
-                        commandLine 'git', 'push', 'origin', tagname
-                        standardOutput = stdout
-                        errorOutput = stdout
-                        ignoreExitValue = true
-                    }.getExitValue()
-
-                    //If upload failed, delete local tag
-                    if (exitValue != 0) {
-                        printlnColor(" --> Uploading tag failed, reverting: " + tagname, 31);
-                        exitValue = exec {
-                            commandLine 'git', 'tag', '-d', tagname
-                            standardOutput = stdout
-                            errorOutput = stdout
-                            ignoreExitValue = true
-                        }.getExitValue()
-                    } else {
-                        printlnColor(" --> Tagged successfuly: " + tagname, 32);
-                    }
-                } else {
-                    printlnColor(" --> Already tagged with: " + tagname, 33);
-                }
-
-                stdout.close();
+            } else {
+                printlnColor(" --> Tagged successfuly: " + tagname, 32);
             }
+        } else {
+            printlnColor(" --> Already tagged with: " + tagname, 33);
         }
-)
+
+        stdout.close();
+    }
+}
 
 def printlnColor(text, color) {
     println("" + (char) 27 + "[" + color + "m" + text + (char) 27 + "[0m");

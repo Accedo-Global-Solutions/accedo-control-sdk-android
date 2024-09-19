@@ -1,5 +1,9 @@
 ## Changelog ##
 
+v1.3.5 (2024-09-19)
+
+* Making okHttpResponse available in the Response object, which allows you to read the details of the Request including cache headers.
+
 v1.3.4 (2024-06-18)
 
 * Fix null check for request payloads

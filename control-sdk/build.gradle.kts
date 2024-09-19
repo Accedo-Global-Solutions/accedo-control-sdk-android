@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "tv.accedo.one"
-version = "1.3.4"
+version = "1.3.5"
 
 android {
     namespace = "tv.accedo.one.sdk"

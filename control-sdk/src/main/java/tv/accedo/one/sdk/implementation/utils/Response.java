@@ -40,6 +40,7 @@ public class Response {
     private final Map<String, List<String>> headers = new HashMap<>();
     @Nullable
     private Exception caughtException;
+    private okhttp3.Response okHttpResponse;
 
     /**
      * @return the response code, or -1 if no connection was made
@@ -119,6 +120,13 @@ public class Response {
     }
 
     /**
+     * @return The okHttpResponse object, which contains more details about the request.
+     */
+    public okhttp3.Response getOkHttpResponse() {
+        return okHttpResponse;
+    }
+
+    /**
      * @return The exception caught during the creation of the urlConnection used, or during connection, or during the parsing of the response.
      */
     @Nullable
@@ -134,6 +142,7 @@ public class Response {
      * @param charset        the charset used, the default being {@link Request.charset}.
      */
     public Response(@NonNull okhttp3.Response okHttpResponse, @NonNull String url, @NonNull Charset charset) {
+        this.okHttpResponse = okHttpResponse;
         this.url = url;
         this.charset = charset;
 

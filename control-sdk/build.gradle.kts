@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "tv.accedo.one"
-version = "1.3.5"
+version = "1.3.6"
 
 android {
     namespace = "tv.accedo.one.sdk"
@@ -38,12 +38,12 @@ android {
 }
 
 dependencies {
-    implementation("androidx.annotation:annotation:1.8.0")
+    implementation("androidx.annotation:annotation:1.9.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 }
 
 apply {

@@ -1,5 +1,9 @@
 ## Changelog ##
 
+v1.3.6 (2024-11-11)
+
+* Remove unnecessary URL check
+* 
 v1.3.5 (2024-09-19)
 
 * Making okHttpResponse available in the Response object, which allows you to read the details of the Request including cache headers.

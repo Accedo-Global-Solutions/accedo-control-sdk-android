@@ -203,7 +203,6 @@ public class Request {
         okhttp3.Request req = requestBuilder.build();
 
         if (caughtCreationException == null) {
-            req.url();
             try {
                 //Logging
                 Utils.log(Log.DEBUG, "Sending " + req.method() + " request: " + req.url());
@@ -223,11 +222,11 @@ public class Request {
         return response;
     }
 
-    public static interface OnResponseListener {
-        public void onResponse(Response response);
+    public interface OnResponseListener {
+        void onResponse(Response response);
     }
 
-    public static interface ResponseChecker<T extends Exception> {
-        public void throwIfNecessary(Response response) throws T;
+    public interface ResponseChecker<T extends Exception> {
+        void throwIfNecessary(Response response) throws T;
     }
 }
